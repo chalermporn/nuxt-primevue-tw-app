@@ -15,7 +15,8 @@ const colorMode = useColorMode()
         <option value="dark">Dark</option>
       </select>
     </p>
-    <NuxtPage class="mx-auto p-4" />
+    <NuxtLayout />
+
   </div>
 </template>
 
