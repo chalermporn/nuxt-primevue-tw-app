@@ -112,11 +112,6 @@ const switchMode = (_mode?: string) => {
         }
     }
 }
-const handlePanelUpdate = (event: any) => {
-    // Handle the update event if needed
-    console.log('Panel updated:', event);
-};
-const showMessage = ref(false)
 </script>
 <template>
     <div id="container" class="p-4 bg-pink-100 h-full min-h-screen">
@@ -139,19 +134,22 @@ const showMessage = ref(false)
                     :class="['pi pi-chevron-left transform duration-200 ease-in', { 'rotate-180 mt-2': isCollapsed }]"
                     @click=" isCollapsed = !isCollapsed" />
             </div>
-            <div class="overflow-auto scrollbar-hide my-16 md:h-[calc(100% - 80px)]">
+            <div class="overflow-auto scrollbar-hide my-16 md:h-[calc(100% - 80px)] w-">
                 <PanelMenu v-model:expandedKeys="expandedKeys" :model="items" multiple :pt="{
                     root: ['flex flex-col', isCollapsed ? 'gap-4' : ''],
                     header: ({ context }) => {
                         return { class: { 'peer': context?.index === 0 } }
                     },
-                    toggleablecontent: ({ props }) => {
+                    toggleablecontent: (data) => {
+                        console.log(data)
                         return {
                             ...(isCollapsed ? {
                                 class: [
-                                    'w-52 bg-white peer-[&:not(:hover)]:hidden group/toggleablecontent transform',
+                                    'w-52 peer-[&:not(:hover)]:hidden group/toggleablecontent transform',
+                                    'bg-white dark:bg-black',
+                                    { 'bg-gray-700': context?.focused },
                                     'peer-hover:rounded-r-lg peer-hover:ps-1 peer-hover:pe-4 peer-hover:pt-3 peer-hover:pb-4 peer-hover:!block peer-hover:absolute peer-hover:left-16 peer-hover:-mt-12 peer-hover:bg-gray-0 peer-hover:dark:bg-bluegray-80 peer-hover:shadow-md',
-                                    { '!duration-0 !animation-none hover:!block hover:rounded-r-lg hover:absolute hover:left-16 hover:-mt-12 hover:p-1 hover:pe-4 hover:pt-3 hover:pb-4 hover:bg-gray-0 hover:dark:bg-bluegray-80 hover:shadow-md hover:z-10': props.level === 0 },
+                                    { '!duration-0 !animation-none hover:!block hover:rounded-r-lg hover:absolute hover:left-16 hover:-mt-12 hover:p-1 hover:pe-4 hover:pt-3 hover:pb-4 hover:bg-gray-0 hover:dark:bg-bluegray-80 hover:shadow-md hover:z-10': true },
                                 ],
                             } : {})
                         }
@@ -161,9 +159,9 @@ const showMessage = ref(false)
                         return { class: ['border-none text-gray-400 rounded-md', { 'bg-gray-700': context.active }] };
                     },
                     content: ({ context }) => {
-                        return { class: ['p-menuitem-content ml-4 text-gray-400 rounded-md', { 'bg-gray-700': context.focused }] }
+                        return { class: ['p-menuitem-content text-gray-400 rounded-md', { 'bg-gray-700': context.focused }] }
                     },
-                }" @update:model="handlePanelUpdate">
+                }">
                     <template #item="{ item, root }">
                         <a v-ripple class="p-ripple flex align-items-center px-3 py-2 cursor-pointer rounded-md">
                             <i class="my-auto" :class="[item.icon]" />
@@ -173,8 +171,12 @@ const showMessage = ref(false)
                                 <Badge v-if="item.badge"
                                     :class="['min-w-5 h-5 flex justify-center items-center', { 'relative bottom-2 right-1': isCollapsed }]"
                                     :pt="{ root: 'bg-yellow-300 text-gray-800 rounded-sm text-sm' }" :value="item.badge" />
-                                <i v-if="item.items?.length && !isCollapsed" class="my-auto"
-                                    :class="{ 'pi pi-chevron-down': !item.expanded, 'pi pi-chevron-up': Object.keys(expandedKeys).includes(item.key || '') }" />
+                                <i v-if="item.items?.length" class="my-auto" :class="[
+                                    'my-auto',
+                                    { '!hidden': root && isCollapsed },
+                                    { 'pi pi-chevron-down': !item.expanded },
+                                    { 'pi pi-chevron-up': Object.keys(expandedKeys).includes(item.key || '') }
+                                ]" />
                             </div>
                         </a>
                     </template>

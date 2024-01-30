@@ -1,12 +1,9 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div
-    id="mainLayout"
-    :class="[
-      'max-md:min-h-screen',
-    ]"
-  >
+  <div id="mainLayout" :class="[
+    'max-md:min-h-screen',
+  ]">
     <header />
     <aside />
     <main>

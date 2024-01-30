@@ -13,7 +13,7 @@ export default defineNuxtConfig({
     options: {
       unstyled: true
     },
-    importPT: { from: path.resolve(__dirname, './presets/lara/') as string, as: 'lara' }
+    importPT: { from: '~/presets/lara' as string, as: 'lara' }
   },
   colorMode: {
     classSuffix: ''
