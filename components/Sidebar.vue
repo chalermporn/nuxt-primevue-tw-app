@@ -1,5 +1,14 @@
 <script setup lang="ts">
 import type { PanelMenuPassThroughMethodOptions } from 'primevue/panelmenu';
+import { ref, inject } from 'vue';
+import KTBButton from "../components/KTBButton"
+
+defineProps({
+    menuItems: {
+        type: Array,
+        default: []
+    },
+})
 
 enum Mode {
     DARK = 'dark',
@@ -7,99 +16,9 @@ enum Mode {
     SYSTEM = 'system'
 }
 
-const colorMode = useColorMode()
-
-const items = ref([
-    {
-        key: '0',
-        label: 'Mail',
-        icon: 'pi pi-envelope',
-        badge: 5,
-        expanded: false, // Add expanded property
-        items: [
-            {
-                key: '0_1',
-                label: 'Compose',
-                icon: 'icon',
-                shortcut: 'shortcut',
-                items: [
-                    {
-                        label: 'test'
-                    }
-                ],
-            },
-            {
-                key: '0_2',
-                label: 'Inbox',
-                icon: '',
-                badge: 0,
-            },
-            {
-                key: '0_3',
-                label: 'Sent',
-                icon: '',
-                shortcut: '',
-            },
-            {
-                key: '0_4',
-                label: 'Trash',
-                icon: '',
-                shortcut: '',
-            },
-        ],
-    },
-    {
-        key: '1',
-        label: 'Reports',
-        icon: 'pi pi-chart-bar',
-        shortcut: '',
-        expanded: false, // Add expanded property
-        items: [
-            {
-                key: '1_1',
-                label: 'Sales',
-                icon: '',
-                badge: 0,
-            },
-            {
-                key: '1_2',
-                label: 'Products',
-                icon: '',
-                badge: 0,
-            },
-        ],
-    },
-    {
-        key: '2',
-        label: 'Profile',
-        icon: 'pi pi-user',
-        shortcut: '',
-        expanded: false, // Add expanded property
-        items: [
-            {
-                key: '2_1',
-                label: 'Settings',
-                icon: '',
-                shortcut: '',
-            },
-            {
-                key: '2_2',
-                label: 'Privacy',
-                icon: '',
-                shortcut: '',
-            },
-        ],
-    },
-]);
-const mode: Ref<Mode> = ref(Mode.DARK)
+const colorMode: any = inject('colorMode')
 const expandedKeys = ref({});
 const isCollapsed = ref(false);
-const inputs: any = {};
-
-items.value.forEach((item) => {
-    inputs[`${item.key}`] = ref();
-});
-
 
 const switchMode = (_mode?: string) => {
     if (_mode) {
@@ -114,11 +33,11 @@ const switchMode = (_mode?: string) => {
 }
 </script>
 <template>
-    <div id="container" class="p-4 bg-pink-100 h-full min-h-screen">
+    <div id="container" class="h-full">
         <div :class="[
-            'h-[660px] p-4 rounded-xl flex flex-col bg-white dark:bg-black dark:text-white',
+            'h-full p-4 flex flex-col bg-gray-100 dark:bg-black dark:text-white',
             'transform duration-200',
-            isCollapsed ? 'w-20' : 'w-56'
+            isCollapsed ? 'sidebar-width-collapse' : 'sidebar-width'
         ]">
             <div :class="[
                 'flex items-center',
@@ -134,9 +53,9 @@ const switchMode = (_mode?: string) => {
                     :class="['pi pi-chevron-left transform duration-200 ease-in', { 'rotate-180 mt-2': isCollapsed }]"
                     @click=" isCollapsed = !isCollapsed" />
             </div>
-            <div class="overflow-auto scrollbar-hide my-16 md:h-[calc(100% - 80px)] w-">
-                <PanelMenu v-model:expandedKeys="expandedKeys" :model="items" multiple :pt="{
-                    root: ['flex flex-col', isCollapsed ? 'gap-4' : ''],
+            <div class="overflow-auto scrollbar-hide my-4 md:h-[calc(100% - 68px)] w-">
+                <PanelMenu v-model:expandedKeys="expandedKeys" :model="menuItems" multiple :pt="{
+                    root: ['flex flex-col gap-3'],
                     header: ({ context }) => {
                         return { class: { 'peer': context?.index === 0 } }
                     },
@@ -155,21 +74,23 @@ const switchMode = (_mode?: string) => {
                     },
                     menucontent: 'border-none',
                     headercontent: ({ context }: PanelMenuPassThroughMethodOptions) => {
-                        return { class: ['border-none text-gray-400 rounded-md', { 'bg-gray-700': context.active }] };
+                        return { class: ['text-gray-400 rounded-md', { 'text-gray-700 dark:text-white dark:bg-gray-700': context.active }] };
                     },
                     content: ({ context }) => {
-                        return { class: ['p-menuitem-content text-gray-400 rounded-md', { 'bg-gray-700': context.focused }] }
+                        return { class: ['p-menuitem-content text-gray-400 rounded-md', { 'text-gray-700 dark:text-white dark:bg-gray-700': context.active }] }
                     },
                 }">
                     <template #item="{ item, root }">
-                        <a v-ripple class="p-ripple flex align-items-center px-3 py-2 cursor-pointer rounded-md">
-                            <i class="my-auto" :class="[item.icon]" />
-                            <span :class="['ml-2', { 'hidden': isCollapsed && root }, { 'font-semibold': item.items }]">
-                                {{ item.label }}</span>
+                        <NuxtLink :to="item?.url" :class="[
+                            'flex items-center px-3 py-2 cursor-pointer rounded-md',
+                            { 'ml-7 mt-1': !root }
+                        ]">
+                            <div class="flex gap-2 mb-1">
+                                <i v-if="item.icon" class="my-auto" :class="[item.icon]" />
+                                <span :class="[{ 'hidden': isCollapsed && root }, { 'font-semibold': item.items }]">
+                                    {{ item.label }}</span>
+                            </div>
                             <div class="ml-auto flex gap-2">
-                                <Badge v-if="item.badge"
-                                    :class="['min-w-5 h-5 flex justify-center items-center', { 'relative bottom-2 right-1': isCollapsed }]"
-                                    :pt="{ root: 'bg-yellow-300 text-gray-800 rounded-sm text-sm' }" :value="item.badge" />
                                 <i v-if="item.items?.length" class="my-auto" :class="[
                                     'my-auto',
                                     { '!hidden': root && isCollapsed },
@@ -177,7 +98,7 @@ const switchMode = (_mode?: string) => {
                                     { 'pi pi-chevron-up': Object.keys(expandedKeys).includes(item.key || '') }
                                 ]" />
                             </div>
-                        </a>
+                        </NuxtLink>
                     </template>
                 </PanelMenu>
             </div>
@@ -189,13 +110,14 @@ const switchMode = (_mode?: string) => {
                         @click="switchMode('')" />
                 </template>
                 <template v-else>
-                    <div class="flex">
-                        <Button type="button" label="Light" icon="pi pi-sun" class="py-2 flex-1 text-gray-400 rounded-full"
-                            :pt="{ root: 'text-gray-400 border border-solid border-gray-700 dark:text-gray-400 dark:border-none' }"
-                            @click="switchMode(Mode.LIGHT)" />
-                        <Button type="button" label="Dark" icon="pi pi-moon" class="py-2 flex-1 border-none rounded-full"
-                            :pt="{ root: 'text-gray-400 bg-white dark:text-white dark:bg-gray-700' }"
-                            @click="switchMode(Mode.DARK)" />
+                    <div class="flex gap-1">
+                        <KTBButton label="Light" icon="pi pi-sun" type="outlined"
+                            border-color="border-gray-700 dark:border-none" text-color="text-gray-700 dark:text-gray-400"
+                            @click="switchMode(Mode.LIGHT)">
+                        </KTBButton>
+                        <KTBButton label="Dark" icon="pi pi-moon" type="contained" bg-color="bg-none dark:bg-gray-700"
+                            text-color="text-gray-400 dark:text-white" @click="switchMode(Mode.DARK)">
+                        </KTBButton>
                     </div>
                 </template>
             </div>
@@ -204,6 +126,14 @@ const switchMode = (_mode?: string) => {
 </template>
 <style>
 /* For Webkit-based browsers (Chrome, Safari and Opera) */
+.sidebar-width {
+    width: var(--sidebar-width);
+}
+
+.sidebar-width-collapse {
+    width: var(--sidebar-collapse-width);
+}
+
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
 }
