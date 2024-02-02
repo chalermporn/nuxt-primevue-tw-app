@@ -9,6 +9,10 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     'nuxt-primevue'
   ],
+  components: {
+    global: true,
+    dirs: ['~/components']
+  },
   primevue: {
     options: {
       unstyled: true
@@ -20,6 +24,8 @@ export default defineNuxtConfig({
   },
   css: [
     'primeicons/primeicons.css', 
+    '~/assets/css/main.css',
+
   ],
   tailwindcss: {
     config: {
@@ -27,5 +33,5 @@ export default defineNuxtConfig({
             "presets/**/*.{js,vue,ts}"
         ],
     }
-  }
+  },
 })

@@ -1,0 +1,9 @@
+:root {
+  --header-nav-height: 60px;
+  --sidebar-width: 230px;
+  --sidebar-collapse-width: 80px;
+}
+
+body {
+  @apply min-h-screen bg-white dark:bg-gray-800 dark:text-gray-200;
+}
