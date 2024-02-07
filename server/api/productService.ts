@@ -1216,6 +1216,10 @@ export const ProductService = {
 
     getProductsWithOrders() {
         return Promise.resolve(this.getProductsWithOrdersData());
+    },
+
+    getProductDetailById(id: string){
+        return Promise.resolve(this.getProductsData().filter((product) => product.id === id));
     }
 };
 
