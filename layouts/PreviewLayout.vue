@@ -9,10 +9,10 @@ const close = () => {
 }
 </script>
 <template>
-    <Offcanvas v-model="isShowSidebar" tagName="aside" position="right" size="medium" class="bg-white shadow-2xl" alwaysShow
-        @close="close">
+    <Offcanvas v-model="isShowSidebar" tagName="aside" position="right" size="medium" class="bg-white dark:bg-black"
+        alwaysShow noBackdrop @close="close">
         <template #title>
-            <slot name="title" />
+            <slot name="title" class="text-black dark:text-white" />
         </template>
         <template #post-title>
             <slot name="post-title" />

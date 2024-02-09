@@ -50,8 +50,8 @@ const modelValue = computed({
     get() {
         return props.modelValue
     },
-    set(value: any) {
-        emit('update:modelValue', value)
+    set(e: any) {
+        emit('update:modelValue', e.value)
     },
 })
 </script>

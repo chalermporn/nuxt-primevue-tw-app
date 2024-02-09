@@ -143,7 +143,8 @@ const state = computed(() => {
 
 // state options
 // -- class
-const wrapperClass = computed(() => `${state.value.heightClass} overflow-y-auto dark:text-bluegray-0`)
+// const wrapperClass = computed(() => `${state.value.heightClass} overflow-y-auto dark:text-bluegray-0`)
+const wrapperClass = computed(() => `${state.value.heightClass}  dark:text-bluegray-0`)
 const activeClass = computed(() => state.value.activeClass)
 const backdropClass = computed(() => state.value.backdropClass)
 // -- offcanvas state
@@ -172,7 +173,6 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <!-- size=> {{ size }} -->
   <ClientOnly>
     <Teleport :disabled="isActive.value && !alwaysShow" to="body">
       <!-- backdrop -->
@@ -181,7 +181,6 @@ onBeforeMount(() => {
       }]" />
       <!-- offcanvas -->
       <component v-bind="$attrs" :is="tagName" :class="[
-        'ease-in-out transform',
         'z-20 duration-200',
         // isAnimating ? `z-20 duration-200 ${dialog ? 'max-md:z-[2200]' : ''}` : 'duration-0',
         pt[activeClass][position],
@@ -214,7 +213,7 @@ onBeforeMount(() => {
           <!-- title -->
           <div :class="[
             'h-full flex items-center truncate',
-            'text-gray-80 dark:text-white/60',
+            'text-gray-80 dark:text-white',
             'max-md:text-lg',
             $slots['pre-title'] ? 'px-3' : 'pe-3',
           ]">

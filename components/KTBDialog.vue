@@ -26,27 +26,40 @@ const props = defineProps({
         type: String,
         required: false,
         default: 'Yes',
+    },
+    modal: {
+        type: Boolean,
+        required: false,
+        default: true,
     }
 })
 
 const emit = defineEmits<{
     (e: 'onClickYes'): boolean
     (e: 'onClickNo'): boolean
+    (e: 'update:modelValue', value: any): any
 }>()
 
-const modelValue = computed(() => (props.modelValue))
-
+const modelValue = computed({
+    get() {
+        return props.modelValue
+    },
+    set(value: any) {
+        console.log(value)
+        emit('update:modelValue', value)
+    },
+})
 
 
 
 </script>
 <template>
-    <Dialog v-model:visible="modelValue" :style="{ width: `${modalWidth}` }" :header="header" :modal="true"
+    <Dialog v-model:visible="modelValue" :style="{ width: `${modalWidth}` }" :header="header" :modal="modal"
         :pt="{ root: 'bg-white dark:bg-gray-700 rounded' }">
         <div class="flex flex-col gap-4">
             <slot />
             <slot name="footer">
-                <div class="flex justify-end gap-2">
+                <div class="pt-4 flex justify-end gap-4">
                     <KTBButton :label="btnNoLabel" icon="pi pi-times" type="outlined" border-color="border-red-700"
                         text-color="text-red-700 dark:text-white" @click="emit('onClickNo')" />
                     <KTBButton :label="btnYesLabel" icon="pi pi-check" type="contained" bg-color="bg-green-700"

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import ProductService from '~/server/api/productService';
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
+const router = useRouter()
 const routeId = computed(() => String(route.params.id))
 const productDetail = ref()
-const productDialog = ref(false)
 
 const getStatusLabel = (status: string) => {
     switch (status) {
@@ -19,6 +19,10 @@ const getStatusLabel = (status: string) => {
             return 'danger';
     }
 };
+
+const editProduct = () => {
+    router.push(`${route.fullPath}/edit`)
+}
 
 watch(routeId, async (newId) => {
     try {
@@ -40,7 +44,7 @@ onMounted(() => {
         </template>
         <template #post-title>
             <KTBButton icon="pi pi-pencil" label="Edit" type="outlined" border-color="border-gray-700"
-                text-color="text-gray-700 dark:text-white" @click="editProduct(productDetail)" />
+                text-color="text-gray-700 dark:text-white" @click="editProduct" />
         </template>
         <div class="flex flex-col gap-3">
             <div class="flex gap-4">
@@ -64,6 +68,7 @@ onMounted(() => {
             <div>Review:
                 <Rating :modelValue="productDetail?.rating" :readonly="true" :cancel="false" />
             </div>
+            <NuxtPage page-key="child" />
         </div>
     </PreviewLayout>
 </template>

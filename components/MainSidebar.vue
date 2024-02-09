@@ -37,11 +37,11 @@ const switchMode = (_mode?: string) => {
 </script>
 <template>
     <Offcanvas v-model="isShowSidebar" tagName="aside" position="left" activeScreen="max-md" size="small" hideHeader
-        :class="[isCollapsed ? 'sidebar-width-collapse' : 'sidebar-width']">
+        noBackdrop :class="[isCollapsed ? 'sidebar-width-collapse' : 'sidebar-width']">
         <template #wrapper="{ className }">
-            <div id="container" class="h-full" :class="className">
+            <div id="container" :class="className">
                 <div :class="[
-                    'h-full p-4 flex flex-col bg-gray-100 dark:bg-black dark:text-white',
+                    'h-[calc(100dvh-var(--header-nav-height))] p-4 flex flex-col bg-gray-100 dark:bg-black dark:text-white',
                     'transform duration-200',
                 ]">
                     <div :class="[
@@ -87,15 +87,24 @@ const switchMode = (_mode?: string) => {
                         }">
                             <template #item="{ item, root }">
                                 <NuxtLink :to="item.url" :class="[
-                                    'flex items-center px-3 py-2 cursor-pointer rounded-md',
+                                    'flex justify-center items-center px-3 py-2 cursor-pointer rounded-md',
                                     { 'ml-7 mt-1': !root }
                                 ]">
                                     <div class="flex gap-2 mb-1">
-                                        <i v-if="item.icon" class="my-auto" :class="[item.icon]" />
-                                        <span :class="[{ 'hidden': isCollapsed && root }, { 'font-semibold': item.items }]">
+                                        <i v-if="item.icon" :class="[
+                                                'my-auto',
+                                                item.icon
+                                            ]" />
+                                        <span :class="[
+                                            { 'hidden': isCollapsed && root },
+                                            { 'font-semibold': item.items }
+                                        ]">
                                             {{ item.label }}</span>
                                     </div>
-                                    <div class="ml-auto flex gap-2">
+                                    <div :class="[
+                                        'flex gap-2',
+                                        { 'ml-auto': !isCollapsed }
+                                    ]">
                                         <i v-if="item.items?.length" class="my-auto" :class="[
                                             'my-auto',
                                             { '!hidden': root && isCollapsed },

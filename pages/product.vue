@@ -2,8 +2,9 @@
 import { FilterMatchMode } from 'primevue/api';
 import { useToast } from 'primevue/usetoast';
 import { useRoute, useRouter } from 'vue-router'
-import ProductService from '~/server/api/productService';
 import { ref, onMounted } from 'vue';
+import ProductService from '~/server/api/productService';
+import { ddl } from '~/server/mockdata/dropdown';
 
 const toast = useToast();
 const route = useRoute()
@@ -18,25 +19,13 @@ const selectedProducts = ref();
 const sortKey = ref();
 const sortOrder = ref();
 const sortField = ref();
-const sortOptions = ref([
-  { label: 'Price High to Low', value: 'price' },
-  { label: 'Price Low to High', value: '!price' },
-]);
 const filters = ref({
   'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 const submitted = ref(false);
-const statuses = ref([
-  { label: 'INSTOCK', value: 'instock' },
-  { label: 'LOWSTOCK', value: 'lowstock' },
-  { label: 'OUTOFSTOCK', value: 'outofstock' }
-]);
-const category = ref([
-  { label: 'Accessories', value: 'accessories' },
-  { label: 'Clothing', value: 'clothing' },
-  { label: 'Electronics', value: 'electronics' },
-  { label: 'Fitness', value: 'fitness' },
-]);
+const statuses = ref(ddl.statuses);
+const category = ref(ddl.category);
+const rowPerPage = ref('INSTOCK');
 const pageTitle = 'Stock';
 const breadcrumbs = [
   {
@@ -59,9 +48,7 @@ const formatCurrency = (value) => {
   return;
 };
 const openNew = () => {
-  product.value = {};
-  submitted.value = false;
-  productDialog.value = true;
+  router.push('/product/stock/new')
 };
 const hideDialog = () => {
   productDialog.value = false;
@@ -186,12 +173,12 @@ const sortedProducts = computed(() => {
   return sorted;
 });
 
-const viewDetail = (event) => {
-  router.push(`/product/stock/${event.data.id}`);
+const viewDetail = (id) => {
+  router.push(`/product/stock/${id}`);
 }
 
 onMounted(() => {
-  ProductService.getProductsSmall().then((data) => (products.value = data));
+  ProductService.getProductsSmall().then((data) => { products.value = data });
 });
 </script>
 <template>
@@ -212,11 +199,14 @@ onMounted(() => {
         </div>
       </div>
 
-      <DataTable ref="dt" :value="products" v-model:selection="selectedProducts" dataKey="id" :paginator="true"
-        :pt="{ thead: 'bg-green-700 text-white', bodyrow: 'cursor-pointer' }" :rows="5" :filters="filters"
-        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-        :rowsPerPageOptions="[5, 10, 25]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-        @row-click="viewDetail">
+      <!-- :paginator="true" :rowsPerPageOptions="[5, 10, 25]"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" -->
+      <DataTable ref="dt" :value="products" v-model:selection="selectedProducts" dataKey="id"
+        tableStyle="min-width: 50rem" :pt="{ thead: 'bg-green-700 text-white', bodyrow: 'cursor-pointer' }" :rows="5"
+        :filters="filters" @row-click="viewDetail($event.data.id)" :paginator="true" :rowsPerPageOptions="[5, 10, 25]"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown">
         <Column selectionMode="multiple" style="width: 3rem" :exportable="false"></Column>
         <Column header="Image">
           <template #body="slotProps">
@@ -245,32 +235,28 @@ onMounted(() => {
         <Column :exportable="false" class="min-w-20 w-20">
           <template #body="slotProps">
             <div class="flex gap-2">
-              <!-- <KTBButton icon="pi pi-pencil" type="outlined" border-color="border-gray-700"
-                                text-color="text-gray-700 dark:text-white" @click="editProduct(slotProps.data)" /> -->
               <KTBButton icon="pi pi-trash" type="outlined" border-color="border-red-700"
-                text-color="text-red-700 dark:text-white" @click="confirmDeleteProduct(slotProps.data)" />
+                text-color="text-red-700 dark:text-white" @click.stop="confirmDeleteProduct(slotProps.data)" />
             </div>
           </template>
         </Column>
       </DataTable>
+
+      <!-- <Paginator :rows="10" :totalRecords="120"
+        :pt="{ root: 'flex flex-wrap justify-start items-center', start: 'order-first me-auto', end: 'order-last ms-auto' }">
+        <template #start="slotProps">
+          Total: {{ slotProps.state.rows }} records
+        </template>
+        <template #end>
+          {{ rowPerPage }}
+          <KTBDropdown v-model="rowPerPage"
+            :item-list="[{ label: 'INSTOCK', value: 'INSTOCK' }, { label: '10', value: 10 }, { label: '15', value: 15 }]"
+            placeholder="" />
+        </template>
+      </Paginator> -->
     </div>
     <!-- # end region datalist table -->
 
-    <!-- #region dialog -->
-    <KTBDialog v-model:visible="productDialog" header="Add Products" class="p-fluid" @on-click-no="hideDialog"
-      @on-click-yes="saveProduct">
-      <img v-if="product.image" :src="`https://primefaces.org/cdn/primevue/images/product/${product.image}`"
-        :alt="product.image" class="block m-auto pb-3" />
-
-      <KTBInputText v-model.trim="product.name" label="Product name" name="productName" />
-      <KTBInputTextarea v-model="product.description" label="Description" />
-      <KTBDropdown v-model="product.inventoryStatus" label="Inventory status" :item-list="statuses"
-        placeholder="Please select a status" searchable required :is-submit="submitted" />
-      <KTBDropdown v-model="product.category" label="Category" :item-list="category" placeholder="Please select a status"
-        searchable required :is-submit="submitted" />
-      <KTBInputNumber v-model="product.price" label="Price" decimal="2" />
-      <KTBInputNumber v-model="product.quantity" label="Quantity" />
-    </KTBDialog>
 
     <KTBDialog v-model:visible="deleteProductDialog" @on-click-no="deleteProductDialog = false"
       @on-click-yes="deleteProduct">
@@ -297,7 +283,7 @@ onMounted(() => {
         <template #list="slotProps">
           <div class="flex flex-wrap">
             <div v-for="( item, index ) in  slotProps.items " :key="index" class="w-full">
-              <div class="flex flex-row items-start p-4 gap-4"
+              <div class="p-4 flex flex-row items-start gap-4 cursor-pointer" @click.stop="viewDetail(item.id)"
                 :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
                 <img class="w-40 shadow-md block mx-auto rounded"
                   :src="`https://primefaces.org/cdn/primevue/images/product/${item.image}`" :alt="item.name" />
@@ -319,7 +305,7 @@ onMounted(() => {
                     <div class="min-w-12 w-12">
                       <KTBButton icon="pi pi-trash" type="outlined" border-color="border-red-700"
                         text-color="text-red-700 dark:text-white" :disabled="item.inventoryStatus === 'OUTOFSTOCK'"
-                        @click="confirmDeleteProduct(item)" />
+                        @click.stop="confirmDeleteProduct(item)" />
                     </div>
                   </div>
                 </div>
