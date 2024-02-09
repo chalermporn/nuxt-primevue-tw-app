@@ -1,6 +1,4 @@
 <script setup lang="ts">
 </script>
-<template>
-    <NuxtWelcome />
-</template>
+<template></template>
 <style scoped></style>

@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   ],
   components: {
     global: true,
-    dirs: ['~/components']
+    dirs: ['~/components', '~/layouts']
   },
   primevue: {
     options: {

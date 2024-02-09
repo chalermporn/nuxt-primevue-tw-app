@@ -14,6 +14,11 @@ provide('colorMode', colorMode)
 
 <style lang="postcss">
 body {
-  @apply min-h-screen bg-white dark:bg-gray-800 dark:text-gray-200;
+  @apply bg-white dark:bg-gray-800 dark:text-gray-200;
+}
+
+html,
+body {
+  @apply h-full;
 }
 </style>

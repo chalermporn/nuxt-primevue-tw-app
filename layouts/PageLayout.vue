@@ -14,7 +14,7 @@ defineProps({
 });
 </script>
 <template>
-    <div class="py-4 px-10 h-full flex flex-col gap-4">
+    <div class="py-4 px-4 h-full flex flex-col gap-4">
         <header class="flex flex-col gap-4">
             <KTBBreadcrumb :breadcrumbs="breadcrumbs" />
             <hr />
