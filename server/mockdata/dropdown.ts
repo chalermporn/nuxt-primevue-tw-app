@@ -13,5 +13,9 @@ export const ddl = {
     sortOptions: [
         { label: 'Price High to Low', value: 'price' },
         { label: 'Price Low to High', value: '!price' },
-    ]
+    ],
+    rowPerPage: [
+        { label: '5', value: '5' },
+        { label: '10', value: '10' },
+    ],
 };

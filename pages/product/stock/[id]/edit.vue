@@ -1,6 +1,6 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
-import ProductService from '~/server/api/productService';
+import { ProductService } from '~/server/api/productService';
 import { ddl } from '~/server/mockdata/dropdown';
 
 const route = useRoute()

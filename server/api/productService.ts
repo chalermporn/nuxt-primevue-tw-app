@@ -363,7 +363,7 @@ const products = ref([
     }
 ])
 
-export const ProductService = {
+export const ProductService = {    
     getProductsData() {
         return products.value
     },
@@ -1202,8 +1202,14 @@ export const ProductService = {
         ];
     },
 
-    getProductsMini() {
-        return Promise.resolve(this.getProductsData().slice(0, 5));
+    getProductsByAmount(amount: number) {
+        return Promise.resolve(this.getProductsData().slice(0, amount));
+    },
+
+    getProductsByPaging(pageNumber: number, rowsPerPage: number) {
+        const startIndex = (pageNumber - 1) * rowsPerPage;
+        const endIndex = pageNumber * rowsPerPage;
+        return Promise.resolve(products.value.slice(startIndex, endIndex));
     },
 
     getProductsSmall() {
