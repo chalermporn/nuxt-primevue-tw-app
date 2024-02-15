@@ -16,7 +16,7 @@ const productDetail = ref({
     image: '',
     name: '',
     description: '',
-    inventoryStatus: '',
+    status: '',
     category: '',
     price: 0,
     quantity: '',
@@ -64,7 +64,7 @@ onMounted(() => {
             <div class="w-2/3 flex flex-col gap-2">
                 <KTBInputText v-model.trim="productDetail.name" label="Product name" name="productName" />
                 <KTBInputTextarea v-model="productDetail.description" label="Description" />
-                <KTBDropdown v-model="productDetail.inventoryStatus" label="Inventory status" :item-list="statuses"
+                <KTBDropdown v-model="productDetail.status" label="Status" :item-list="statuses"
                     placeholder="Please select a status" searchable required :is-submit="submitted" />
                 <KTBDropdown v-model="productDetail.category" label="Category" :item-list="category"
                     placeholder="Please select a status" searchable required :is-submit="submitted" />

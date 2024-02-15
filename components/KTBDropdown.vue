@@ -44,6 +44,11 @@ const props = defineProps({
         type: String,
         required: false,
         default: 'label',
+    },
+    optionValue: {
+        type: String,
+        required: false,
+        default: 'value',
     }
 })
 
@@ -51,24 +56,28 @@ const emit = defineEmits<{
     (e: 'update:modelValue', value: any): any
 }>()
 
+const selectedLabel = computed(() => {
+    const findList = props.itemList.find((item: any) => item.value === modelValue.value) as any
+    return findList?.label
+})
+
 const modelValue = computed({
     get() {
         return props.modelValue
     },
     set(e: any) {
-        emit('update:modelValue', e.label)
+        emit('update:modelValue', e.value)
     },
 })
 </script>
 <template>
     <label>{{ label }}<span v-show="required" class="ml-1 text-red-500">*</span></label>
-    <Dropdown id="inventoryStatus" class="!w-full" v-model="modelValue" :options="itemList" :optionLabel="optionLabel"
-        :highlightOnSelect="true" :pt="{
-            list: 'mt-1 text-black bg-white dark:bg-gray-700', item: ({ context }) => { }
-        }" :placeholder="placeholder">
+    <Dropdown class="!w-full" v-model="modelValue" :options="itemList" :optionLabel="optionLabel" :pt="{
+        list: 'mt-1 text-black bg-white dark:bg-gray-700', item: ({ context }) => { }
+    }" :placeholder="placeholder">
         <template #value="slotProps">
             <div v-if="slotProps.value && slotProps.value.value">{{ slotProps.value.label }}</div>
-            <div v-else-if="slotProps.value && !slotProps.value.value">{{ slotProps.value }}</div>
+            <div v-else-if="slotProps.value && !slotProps.value.value">{{ selectedLabel }} </div>
             <span v-else>{{ slotProps.placeholder }}</span>
         </template>
     </Dropdown>

@@ -55,8 +55,8 @@ onMounted(() => {
                         <h2 class="font-semibold">{{ productDetail?.name }}</h2>
                         <small>{{ `(ID: ${productDetail?.id})` }}</small>
                     </div>
-                    <Tag class="w-[fit-content]" :value="productDetail?.inventoryStatus"
-                        :severity="getStatusLabel(productDetail?.inventoryStatus) || undefined" />
+                    <Tag class="w-[fit-content]" :value="productDetail?.status"
+                        :severity="getStatusLabel(productDetail?.status) || undefined" />
                 </div>
             </div>
             <hr />

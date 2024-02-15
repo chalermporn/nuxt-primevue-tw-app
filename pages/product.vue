@@ -14,9 +14,7 @@ const deleteProductDialog = ref(false);
 const deleteProductsDialog = ref(false);
 const product = ref({});
 const selectedProducts = ref();
-const sortKey = ref();
-const sortOrder = ref();
-const sortField = ref();
+const first = ref();
 const filters = ref({
   'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
@@ -37,19 +35,17 @@ const selectedColumns = ref(columns.value);
 
 const showFilter = ref(false);
 const ddlFilter = ref(ddl.filterOptions)
-// const ddlFilterShowBy = ref([{ label: 'All', value: '' }, ...ddl.category])
-const ddlFilterShowBy = ref(ddl.category)
-const filterFieldAscDsc = ref();
-const filterFieldCategory = ref(ddlFilterShowBy.value[0]);
+const ddlFilterShowBy = ref(ddl.filterOptionsShowBy)
+const filterOrder = ref(); //asc dsc
+const filterOrderCol = ref(); //ddl filter order column
+const filterType = ref() //name price category rating
+const filterByCategory = ref(ddlFilterShowBy.value[0].value);
 
-const totalRecords = ref(0)
-const rowPerPage = ref(5);
+const recordPerPage = ref(0)
+const totalElement = ref(0)
 const ddlRowPerPage = ref(ddl.rowPerPage)
+const rowPerPage = ref('5');
 const page = ref(1)
-
-watch(() => products.value, (total) => {
-  totalRecords.value = total.length || 0;
-})
 
 
 const onRowPerPageChanged = () => {
@@ -62,20 +58,48 @@ const onPageChange = (e) => {
   getProducts()
 }
 
+const onSort = (e) => {
+  filterOrderCol.value = e.sortField.charAt(0).toUpperCase() + e.sortField.slice(1);
+}
+
 const onFilterShowByChange = (order) => {
-  if (!filterFieldAscDsc.value) return
-  getProducts(order, filterFieldAscDsc.value || '')
+  if (!filterOrderCol.value) return
+  filterOrder.value = order
+  getProducts()
 }
 
 const onFilterCategoryChange = () => {
-  getProducts('asc', 'category')
+  filterType.value = 'category'
+  getProducts()
 }
 
-const getProducts = (order, filterField) => {
-  ProductService.getProductsByPaging(page.value, rowPerPage.value, order, filterField).then((data) => {
-    products.value = data;
+const clearFilter = () => {
+  page.value = 1
+  first.value = 0
+  rowPerPage.value = '5'
+  filterOrder.value = ''
+  filterOrderCol.value = ''
+  filterType.value = ''
+  filterByCategory.value = ddlFilterShowBy.value[0].value
+
+  getProducts()
+}
+
+const getProducts = () => {
+  ProductService.getProductsByPaging(page.value, rowPerPage.value, filterOrder.value, filterOrderCol.value, filterType.value, filterByCategory.value).then((data) => {
+    products.value = data.products;
+    totalElement.value = data.totalElement;
   });
 }
+
+watch(() => products.value, (total) => {
+  recordPerPage.value = total.length || 0;
+})
+
+const sortOrder = computed(() => {
+  if (!filterOrder.value) return null
+  return filterOrder.value === 'asc' ? 1 : -1
+})
 
 
 // functions
@@ -121,24 +145,6 @@ const getStatusLabel = (status) => {
 };
 
 
-const sortedProducts = computed(() => {
-  if (!sortKey.value) {
-    return products.value;
-  }
-
-  const sorted = [...products.value].sort((a, b) => {
-    const aValue = a[sortField.value];
-    const bValue = b[sortField.value];
-
-    if (typeof aValue === 'string') {
-      return aValue.localeCompare(bValue) * sortOrder.value;
-    } else {
-      return (aValue - bValue) * sortOrder.value;
-    }
-  });
-
-  return sorted;
-});
 
 const viewDetail = (id) => {
   router.push(`/product/stock/${id}`);
@@ -172,9 +178,10 @@ onMounted(() => {
       </div>
 
       <DataTable ref="dt" :value="products" v-model:selection="selectedProducts" resizableColumns columnResizeMode="fit"
-        showGridlines dataKey="id" :paginator="false" :rows="rowPerPage" :filters="filters" :sort-field="'rating'"
-        sort-order="1" :pt="{ thead: 'bg-green-700 text-white', bodyrow: 'cursor-pointer' }"
-        @row-click="viewDetail($event.data.id)">
+        :sort-field="(filterOrderCol)?.toLowerCase()" :sort-order="sortOrder" showGridlines dataKey="id"
+        :paginator="false" :rows="rowPerPage" :filters="filters"
+        :pt="{ thead: 'bg-green-700 text-white', bodyrow: 'cursor-pointer' }" @row-click="viewDetail($event.data.id)"
+        @sort="onSort">
         <template #header>
           <div style="text-align:left">
             <KTBMultiSelect v-model="selectedColumns" :options="columns" optionLabel="header" />
@@ -191,8 +198,8 @@ onMounted(() => {
             <div v-else-if="col.field === 'price'">{{ formatCurrency(slotProps.data.price) }}</div>
             <Rating v-else-if="col.field === 'rating'" :modelValue="slotProps.data.rating" :readonly="true"
               :cancel="false" />
-            <Tag v-else-if="col.field === 'inventoryStatus'" :value="slotProps.data.inventoryStatus"
-              :severity="getStatusLabel(slotProps.data.inventoryStatus)" />
+            <Tag v-else-if="col.field === 'status'" :modelValue="slotProps.data.status" :value="slotProps.data.status"
+              :severity="getStatusLabel(slotProps.data.status)" />
             <div v-else>{{ slotProps.data[col.field] }}</div>
           </template>
         </Column>
@@ -237,14 +244,14 @@ onMounted(() => {
                         <i class="pi pi-tag"></i>
                         <span class="font-semibold">{{ item.category }}</span>
                       </span>
-                      <Tag :value="item.inventoryStatus"></Tag>
+                      <Tag :value="item.status"></Tag>
                     </div>
                   </div>
                   <div class="flex flex-col items-center sm:items-end gap-3 sm:gap-2">
                     <span class="text-2xl font-semibold">${{ item.price }}</span>
                     <div class="min-w-12 w-12">
                       <KTBButton class="w-full" icon="pi pi-trash" type="outlined" border-color="border-red-700"
-                        text-color="text-red-700 dark:text-white" :disabled="item.inventoryStatus === 'OUTOFSTOCK'"
+                        text-color="text-red-700 dark:text-white" :disabled="item.status === 'OUTOFSTOCK'"
                         @click.stop="confirmDeleteProduct(item)" />
                     </div>
                   </div>
@@ -257,12 +264,12 @@ onMounted(() => {
     </div>
     <!-- # region dataview  -->
 
-    <Paginator class="mt-4" :rows="rowPerPage" :totalRecords="30"
+    <Paginator v-model:first="first" class="mt-4" :rows="rowPerPage" :totalRecords="totalElement"
       template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
       :pt="{ root: 'flex flex-wrap justify-start items-center', start: 'order-first me-auto', end: 'order-last ms-auto' }"
       @page="onPageChange($event)">
       <template #start>
-        Total 30 products ({{ totalRecords }} per page)
+        Total {{ totalElement }} products ({{ recordPerPage }} per page)
       </template>
       <template #end>
         <KTBDropdown v-model="rowPerPage" :item-list="ddlRowPerPage" @update:model-value="onRowPerPageChanged" />
@@ -274,12 +281,12 @@ onMounted(() => {
       <template #title>Filter</template>
       <template #post-title>
         <KTBButton icon="pi pi-filter-slash" label="Clear filter" type="outlined" border-color="border-gray-700"
-          text-color="text-gray-700 dark:text-white" @click="editProduct" />
+          text-color="text-gray-700 dark:text-white" @click="clearFilter" />
       </template>
       <div class="p-4 h-full flex flex-col gap-3">
         <h2 class="text-gray-400">Sorting</h2>
         <div>
-          <KTBDropdown v-model="filterFieldAscDsc" label="Order column" :item-list="ddlFilter"
+          <KTBDropdown v-model="filterOrderCol" label="Order column" :item-list="ddlFilter"
             placeholder="Please select a filter column" :is-submit="submitted" />
 
           <div class="mt-3 flex gap-1">
@@ -291,7 +298,7 @@ onMounted(() => {
         </div>
         <hr />
         <div>
-          <KTBDropdown v-model="filterFieldCategory" label="Show by category" :item-list="ddlFilterShowBy"
+          <KTBDropdown v-model="filterByCategory" label="Show by category" :item-list="ddlFilterShowBy"
             placeholder="Please select a filter column" :is-submit="submitted"
             @update:model-value="onFilterCategoryChange()" />
         </div>
