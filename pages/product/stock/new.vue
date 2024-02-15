@@ -14,7 +14,7 @@ const product = ref({
     image: '',
     name: '',
     description: '',
-    inventoryStatus: '',
+    status: '',
     category: '',
     price: '',
     quantity: '',
@@ -27,7 +27,7 @@ const saveProduct = () => {
     product.value.id = createId();
     product.value.code = createId();
     product.value.image = 'product-placeholder.svg';
-    product.value.inventoryStatus = product.value.inventoryStatus ? (product.value.inventoryStatus).toUpperCase() : 'INSTOCK';
+    product.value.status = product.value.status ? (product.value.status).toUpperCase() : 'INSTOCK';
 
     ProductService.addProducts(product)
 
@@ -63,8 +63,8 @@ const modelValue = computed({
 
         <KTBInputText v-model.trim="product.name" label="Product name" name="productName" />
         <KTBInputTextarea v-model="product.description" label="Description" />
-        <KTBDropdown v-model="product.inventoryStatus" label="Inventory status" :item-list="statuses"
-            placeholder="Please select a status" searchable required :is-submit="submitted" />
+        <KTBDropdown v-model="product.status" label="Status" :item-list="statuses" placeholder="Please select a status"
+            searchable required :is-submit="submitted" />
         <KTBDropdown v-model="product.category" label="Category" :item-list="category" placeholder="Please select a status"
             searchable required :is-submit="submitted" />
         <KTBInputNumber v-model="product.price" label="Price" :decimal="2" />

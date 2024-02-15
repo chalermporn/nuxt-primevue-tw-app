@@ -1,21 +1,28 @@
 export const ddl = {
     statuses: [
-        { label: 'INSTOCK', value: 'instock' },
-        { label: 'LOWSTOCK', value: 'lowstock' },
-        { label: 'OUTOFSTOCK', value: 'outofstock' }
+        { label: 'INSTOCK', value: 'INSTOCK' },
+        { label: 'LOWSTOCK', value: 'LOWSTOCK' },
+        { label: 'OUTOFSTOCK', value: 'OUTOFSTOCK' }
     ],
     category: [
-        { label: 'Accessories', value: 'accessories' },
-        { label: 'Clothing', value: 'clothing' },
-        { label: 'Electronics', value: 'electronics' },
-        { label: 'Fitness', value: 'fitness' },
+        { label: 'Accessories', value: 'Accessories' },
+        { label: 'Clothing', value: 'Clothing' },
+        { label: 'Electronics', value: 'Electronics' },
+        { label: 'Fitness', value: 'Fitness' },
     ],
     filterOptions: [
-        { label: 'Name', value: 'name' },
-        { label: 'Price', value: 'price' },
-        { label: 'Category', value: 'category' },
-        { label: 'Rating', value: 'rating' },
-        { label: 'Status', value: 'status' },
+        { label: 'Name', value: 'Name' },
+        { label: 'Price', value: 'Price' },
+        { label: 'Category', value: 'Category' },
+        { label: 'Rating', value: 'Rating' },
+        { label: 'Status', value: 'Status' },
+    ],
+    filterOptionsShowBy:[
+        { label: 'All', value: 'All' },
+        { label: 'Accessories', value: 'Accessories' },
+        { label: 'Clothing', value: 'Clothing' },
+        { label: 'Electronics', value: 'Electronics' },
+        { label: 'Fitness', value: 'Fitness' },
     ],
     rowPerPage: [
         { label: '5', value: '5' },
@@ -27,6 +34,6 @@ export const ddl = {
         { field: 'price', header: 'Price', minWidth: '8rem' },
         { field: 'category', header: 'Category', minWidth: '10rem' },
         { field: 'rating', header: 'Rating', minWidth: '12rem' },
-        { field: 'inventoryStatus', header: 'Status', minWidth: '12rem' },
+        { field: 'status', header: 'Status', minWidth: '12rem' },
     ],
 };
