@@ -363,7 +363,7 @@ const products = ref([
     }
 ])
 
-export const ProductService = {
+export const ProductService = {    
     getProductsData() {
         return products.value
     },
@@ -1202,9 +1202,98 @@ export const ProductService = {
         ];
     },
 
-    getProductsMini() {
-        return Promise.resolve(this.getProductsData().slice(0, 5));
+    // getProductsByPaging(pageNumber: number, rowsPerPage: number, order: string, field: string, searchValue?: string) {
+    //     const startIndex = (pageNumber - 1) * rowsPerPage;
+    //     const endIndex = pageNumber * rowsPerPage;
+    //     // console.log('rowsPerPage> ', rowsPerPage)
+    //     const filteredProducts = this.getFilterProduct(field, searchValue || '');
+
+    //     console.log('filteredProducts=> ', filteredProducts)
+    //     // Sort the products based on the specified order and field
+    //     const sortedProducts = this.sortProuctByOrderAndField(order, field, filteredProducts);
+
+    //     console.log('sortedProducts=> ', sortedProducts)
+
+        
+    //     // Return the sliced portion of the sorted products
+    //     return Promise.resolve(sortedProducts.slice(startIndex, endIndex));
+    // },
+      
+    // sortProuctByOrderAndField(order: string, field: string, products: any[]) {
+    //     const isAscending = order === 'asc';
+        
+    //     return products.sort((a, b) => {
+    //         if (a[field] < b[field]) {
+    //         return isAscending ? -1 : 1;
+    //         }
+    //         if (a[field] > b[field]) {
+    //         return isAscending ? 1 : -1;
+    //         }
+    //         return 0;
+    //     });
+    // },
+
+    // getFilterProduct(searchField: string, searchValue: string) {        
+    //     // Filter the products based on the specified searchField and searchValue
+    //     // console.log(searchField, searchValue)
+    //     if (!searchField || !searchValue) {
+    //         return products.value;
+    //     }
+    
+    //     return products.value.filter((product: any) => product[searchField].toLowerCase() === searchValue);
+    // },
+
+// --------------------
+
+    getProductsByPaging(pageNumber: number, rowsPerPage: number, order: string, field: string) {
+        const startIndex = (pageNumber - 1) * rowsPerPage;
+        const endIndex = pageNumber * rowsPerPage;
+
+        // Sort the products based on the specified order and field
+        const sortedProducts = this.sortProuctByOrderAndField(order, field?.toLowerCase() || '', products.value);
+        console.log(sortedProducts.length)
+        // Return the sliced portion of the sorted products
+        return Promise.resolve(sortedProducts.slice(startIndex, endIndex));
     },
+      
+    sortProuctByOrderAndField(order: string, field: string, products: any[]) {
+        const isAscending = order === 'asc';
+        
+        return products.sort((a, b) => {
+            if (a[field] < b[field]) {
+            return isAscending ? -1 : 1;
+            }
+            if (a[field] > b[field]) {
+            return isAscending ? 1 : -1;
+            }
+            return 0;
+        });
+    },
+
+    
+
+
+
+
+    // getFilterProduct(order: string, field: string) {
+    //     const isAscending = order === 'asc';
+      
+    //     return Promise.resolve(products.value.sort((a: any, b: any) => {
+    //       if (a[field] < b[field]) {
+    //         return isAscending ? -1 : 1;
+    //       }
+    //       if (a[field] > b[field]) {
+    //         return isAscending ? 1 : -1;
+    //       }
+    //       return 0;
+    //     }));
+    // },
+
+    // getProductsByPaging(pageNumber: number, rowsPerPage: number) {
+    //     const startIndex = (pageNumber - 1) * rowsPerPage;
+    //     const endIndex = pageNumber * rowsPerPage;
+    //     return Promise.resolve(products.value.slice(startIndex, endIndex));
+    // },
 
     getProductsSmall() {
         return Promise.resolve(this.getProductsData().slice(0, 10));
