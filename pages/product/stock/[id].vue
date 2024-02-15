@@ -62,7 +62,7 @@ onMounted(() => {
             <hr />
             <h2 class="font-semibold">Details</h2>
             <div>Price: <span class="text-gray-400">{{ `$${productDetail?.price}` }}</span></div>
-            <div>Category: <span class="text-gray-400">{{ productDetail?.category }}</span></div>
+            <div>Category: <span class="text-gray-400">{{ productDetail?.category.value }}</span></div>
             <div>Quantity: <span class="text-gray-400">{{ productDetail?.quantity }}</span></div>
             <hr />
             <div>Review:

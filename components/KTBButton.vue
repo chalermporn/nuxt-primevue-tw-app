@@ -58,8 +58,8 @@ const style: any = computed(() => {
 
 </script>
 <template>
-    <Button type="button" :label="label" :icon="icon" :disabled="disabled" class="flex items-center" :pt="{ root: style }"
-        :class="[
+    <Button type="button" :label="label" :icon="icon" :disabled="disabled" class="w-full flex items-center"
+        :pt="{ root: style }" :class="[
             'flex-1',
             { '!bg-gray-200 !text-gray-400 !border !border-gray-700': disabled },
             { 'justify-center': icon && !label },
