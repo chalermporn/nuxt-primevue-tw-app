@@ -22,10 +22,10 @@ const items = ref([
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 provide('screen', {
-  isSm: breakpoints.greater('sm'),
-  isMd: breakpoints.greater('md'),
-  isLg: breakpoints.greater('lg'),
-  isXl: breakpoints.greater('xl'),
+  isSm: breakpoints.greaterOrEqual('sm'),
+  isMd: breakpoints.greaterOrEqual('md'),
+  isLg: breakpoints.greaterOrEqual('lg'),
+  isXl: breakpoints.greaterOrEqual('xl'),
   isMaxSm: breakpoints.smaller('sm'),
   isMaxMd: breakpoints.smaller('md'),
   isMaxLg: breakpoints.smaller('lg'),
