@@ -1,6 +1,7 @@
-<script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router'
+<script setup>
+import { useRouter } from 'vue-router'
 
+const { isSm } = inject('screen')
 const router = useRouter()
 const isShowSidebar = ref(true)
 
@@ -9,8 +10,8 @@ const close = () => {
 }
 </script>
 <template>
-    <Offcanvas v-model="isShowSidebar" tagName="aside" position="right" size="medium" class="bg-white dark:bg-black"
-        alwaysShow noBackdrop @close="close">
+    <Offcanvas v-model="isShowSidebar" tagName="aside" position="right" :size="isSm ? 'medium' : 'full'"
+        class="bg-white dark:bg-black" alwaysShow noBackdrop @close="close">
         <template #title>
             <slot name="title" class="text-black dark:text-white" />
         </template>

@@ -370,11 +370,13 @@ export const ProductService = {
 
     // field => column that use to order asc and dsc
     // searchValue => filter data in small group that match 
-    getProductsByPaging(pageNumber: number, rowsPerPage: number, order: string, field: string, filterType: string, filterValue: string, products: any) {
+    getProductsByPaging(pageNumber: number, rowsPerPage: number, order: string, field: string, filterType: string, filterValue: string, _searchKeyword: string) {
+        // console.log(pageNumber, rowsPerPage, order, field, filterType, filterValue, _searchKeyword)
         const startIndex = (pageNumber - 1) * rowsPerPage;
         const endIndex = pageNumber * rowsPerPage;
+        const searchKeyword = _searchKeyword.toLowerCase() || ''
       
-        const filteredProducts = this.getFilterProduct(filterType, filterValue);
+        const filteredProducts = this.getFilterProduct(filterType, filterValue, searchKeyword);
       
         const sortedProducts = this.sortProuctByOrderAndField(order, (field)?.toLocaleLowerCase() || '', filteredProducts);
 
@@ -399,13 +401,32 @@ export const ProductService = {
             });
     },
       
-    getFilterProduct(filterType: string, filterValue: string) {
-        if ((!filterType && !filterValue) || filterValue.toLowerCase() === 'all') {
-            return products.value;
+    getFilterProduct(filterType: string, filterValue: string, searchKeyword: string) {
+        let filteredProducts: any = [];
+
+        if (filterValue === 'All' && searchKeyword) {
+          // Apply product filter (filterType name) with searchKeyword
+          filteredProducts = products.value.filter((product: any) =>
+            product['name'].toLowerCase().includes(searchKeyword.toLowerCase())
+          );
+        } else if (filterValue === 'All' && !searchKeyword) {
+          // All products
+          filteredProducts = products.value;
+        } else if (filterValue !== 'All' && searchKeyword) {
+          // Apply product filter (filterType name) with searchKeyword then filter field(filterType) with filterValue
+          filteredProducts = products.value.filter((product: any) =>
+            product['name'].toLowerCase().includes(searchKeyword.toLowerCase()) &&
+            product[filterType] === filterValue
+          );
+        } else if (filterValue !== 'All' && !searchKeyword) {
+          // Apply product filter field(filterType) with filterValue
+          filteredProducts = products.value.filter((product: any) =>
+            product[filterType] === filterValue
+          );
         }
-        
-        return products.value.filter((product: any) => product[filterType] === filterValue);
-    },
+      
+        return filteredProducts;
+      },
 
     getProductsSmall() {
         return Promise.resolve(this.getProductsData().slice(0, 10));
@@ -413,14 +434,6 @@ export const ProductService = {
 
     getProducts() {
         return Promise.resolve(this.getProductsData());
-    },
-
-    getProductsWithOrdersSmall() {
-        return Promise.resolve(this.getProductsWithOrdersData().slice(0, 10));
-    },
-
-    getProductsWithOrders() {
-        return Promise.resolve(this.getProductsWithOrdersData());
     },
 
     getProductDetailById(id: string){

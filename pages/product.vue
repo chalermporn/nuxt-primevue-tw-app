@@ -40,6 +40,7 @@ const filterOrder = ref(); //asc dsc
 const filterOrderCol = ref(); //ddl filter order column
 const filterType = ref() //name price category rating
 const filterByCategory = ref(ddlFilterShowBy.value[0].value);
+const filtersSearchBox = ref('')
 
 const recordPerPage = ref(0)
 const totalElement = ref(0)
@@ -47,6 +48,17 @@ const ddlRowPerPage = ref(ddl.rowPerPage)
 const rowPerPage = ref('5');
 const page = ref(1)
 
+const isDisplay = (fields) => {
+  return selectedColumns.value.some(field => field.field.includes(fields));
+}
+
+const onSearch = (e) => {
+  if (!filtersSearchBox.value) {
+    clearFilter()
+    return
+  }
+  getProducts()
+}
 
 const onRowPerPageChanged = () => {
   rowPerPage.value = rowPerPage.value
@@ -81,12 +93,13 @@ const clearFilter = () => {
   filterOrderCol.value = ''
   filterType.value = ''
   filterByCategory.value = ddlFilterShowBy.value[0].value
+  filtersSearchBox.value = ''
 
   getProducts()
 }
 
 const getProducts = () => {
-  ProductService.getProductsByPaging(page.value, rowPerPage.value, filterOrder.value, filterOrderCol.value, filterType.value, filterByCategory.value).then((data) => {
+  ProductService.getProductsByPaging(page.value, rowPerPage.value, filterOrder.value, filterOrderCol.value, filterType.value, filterByCategory.value, filtersSearchBox.value).then((data) => {
     products.value = data.products;
     totalElement.value = data.totalElement;
   });
@@ -158,9 +171,9 @@ onMounted(() => {
   <PageLayout :page-title="pageTitle" :breadcrumbs="breadcrumbs">
     <NuxtPage page-key="child" />
     <!-- # region datalist table -->
-    <div class="hidden xl:flex flex-col gap-4">
+    <section>
       <div class="flex justify-between">
-        <div class="flex gap-4">
+        <div class="mb-4 flex gap-4">
           <KTBButton label="New" icon="pi pi-plus" type="contained" bg-color="bg-green-700" text-color="text-white"
             @click="openNew" />
           <KTBButton class="hidden xl:block" label="Delete" icon="pi pi-trash" type="contained" bg-color="bg-red-700"
@@ -168,7 +181,7 @@ onMounted(() => {
             @click="deleteProduct" />
         </div>
         <div class="flex gap-2">
-          <KTBInputText v-model="filters['global'].value" name="searchBox" placeholder="Search..." />
+          <KTBInputText v-model="filtersSearchBox" name="searchBox" placeholder="Search..." @keyup.enter="onSearch" />
 
           <div class="min-w-12 w-12">
             <KTBButton icon="pi pi-filter" type="contained" bg-color="bg-gray-200"
@@ -176,43 +189,47 @@ onMounted(() => {
           </div>
         </div>
       </div>
-
-      <DataTable ref="dt" :value="products" v-model:selection="selectedProducts" resizableColumns columnResizeMode="fit"
-        :sort-field="(filterOrderCol)?.toLowerCase()" :sort-order="sortOrder" showGridlines dataKey="id"
-        :paginator="false" :rows="rowPerPage" :filters="filters"
-        :pt="{ thead: 'bg-green-700 text-white', bodyrow: 'cursor-pointer' }" @row-click="viewDetail($event.data.id)"
-        @sort="onSort">
-        <template #header>
-          <div style="text-align:left">
-            <KTBMultiSelect v-model="selectedColumns" :options="columns" optionLabel="header" />
-          </div>
-        </template>
-        <Column selectionMode=" multiple" style="width: 3rem" :exportable="false">
-        </Column>
-
-        <Column v-for="(col, index) of  selectedColumns " :field="col.field" :header="col.header"
-          :sortable="col.field !== 'image'" :key="col.field + '_' + index" :style="{ minWidth: `${col.minWidth}` }">
-          <template #body="slotProps">
-            <img v-if="col.field === 'image'" class="max-w-20 rounded"
-              :src="`https://primefaces.org/cdn/primevue/images/product/${slotProps.data.image}`" />
-            <div v-else-if="col.field === 'price'">{{ formatCurrency(slotProps.data.price) }}</div>
-            <Rating v-else-if="col.field === 'rating'" :modelValue="slotProps.data.rating" :readonly="true"
-              :cancel="false" />
-            <Tag v-else-if="col.field === 'status'" :modelValue="slotProps.data.status" :value="slotProps.data.status"
-              :severity="getStatusLabel(slotProps.data.status)" />
-            <div v-else>{{ slotProps.data[col.field] }}</div>
-          </template>
-        </Column>
-        <Column :exportable="false">
-          <template #body="slotProps">
-            <div class="min-w-12 w-12 flex gap-2">
-              <KTBButton icon="pi pi-trash" type="outlined" border-color="border-red-700"
-                text-color="text-red-700 dark:text-white" @click.stop="confirmDeleteProduct(slotProps.data)" />
+    </section>
+    <!-- # region datalist table -->
+    <section class="hidden xl:flex flex-col gap-4">
+      <div>
+        <DataTable ref="dt" :value="products" v-model:selection="selectedProducts" resizableColumns columnResizeMode="fit"
+          :sort-field="(filterOrderCol)?.toLowerCase()" :sort-order="sortOrder" showGridlines dataKey="id"
+          :paginator="false" :rows="rowPerPage" :filters="filters"
+          :pt="{ thead: 'bg-green-700 text-white', bodyrow: 'cursor-pointer' }" @row-click="viewDetail($event.data.id)"
+          @sort="onSort">
+          <template #header>
+            <div style="text-align:left">
+              <KTBMultiSelect v-model="selectedColumns" :options="columns" optionLabel="header" />
             </div>
           </template>
-        </Column>
-      </DataTable>
-    </div>
+          <Column selectionMode="multiple" style="width: 3rem" :exportable="false">
+          </Column>
+
+          <Column v-for="(col, index) of  selectedColumns " :field="col.field" :header="col.header"
+            :sortable="col.field !== 'image'" :key="col.field + '_' + index" :style="{ minWidth: `${col.minWidth}` }">
+            <template #body="slotProps">
+              <img v-if="col.field === 'image'" class="max-w-20 rounded"
+                :src="`https://primefaces.org/cdn/primevue/images/product/${slotProps.data.image}`" />
+              <div v-else-if="col.field === 'price'">{{ formatCurrency(slotProps.data.price) }}</div>
+              <Rating v-else-if="col.field === 'rating'" :modelValue="slotProps.data.rating" :readonly="true"
+                :cancel="false" />
+              <Tag v-else-if="col.field === 'status'" :modelValue="slotProps.data.status" :value="slotProps.data.status"
+                :severity="getStatusLabel(slotProps.data.status)" />
+              <div v-else>{{ slotProps.data[col.field] }}</div>
+            </template>
+          </Column>
+          <Column :exportable="false">
+            <template #body="slotProps">
+              <div class="min-w-12 w-12 flex gap-2">
+                <KTBButton icon="pi pi-trash" type="outlined" border-color="border-red-700"
+                  text-color="text-red-700 dark:text-white" @click.stop="confirmDeleteProduct(slotProps.data)" />
+              </div>
+            </template>
+          </Column>
+        </DataTable>
+      </div>
+    </section>
     <!-- # end region datalist table -->
 
     <KTBDialog v-model:visible="deleteProductDialog" @on-click-no="deleteProductDialog = false"
@@ -227,28 +244,34 @@ onMounted(() => {
     <!-- # region dataview  -->
     <div class="flex flex-col xl:hidden">
       <DataView :value="products" :paginator="false" :rows="5">
+        <template #header>
+          <div style="text-align:left">
+            <KTBMultiSelect v-model="selectedColumns" :options="columns" optionLabel="header" />
+          </div>
+        </template>
         <template #list="slotProps">
           <div class="flex flex-wrap">
             <div v-for="(  item, index  ) in   slotProps.items  " :key="index" class="w-full">
-              <div class="py-4 flex flex-row items-start gap-4 cursor-pointer" @click.stop="viewDetail(item.id)"
+              <div class="px-0 py-4 sm:p-4 flex flex-col sm:flex-row items-start gap-4 cursor-pointer"
+                @click.stop="viewDetail(item.id)"
                 :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
-                <img class="w-40 shadow-md block mx-auto rounded"
+                <img v-show="isDisplay('image')" class="w-60 sm:w-40 shadow-md block mx-auto rounded"
                   :src="`https://primefaces.org/cdn/primevue/images/product/${item.image}`" :alt="item.name" />
-                <div class="flex flex-row justify-between items-start flex-1 gap-4">
+                <div class="w-60 mx-auto flex flex-col gap-4 sm:flex-row justify-between items-start flex-1">
                   <div class="flex flex-col items-start gap-3">
-                    <div class="text-2xl font-bold text-surface-900 dark:text-surface-0">{{ item.name }}
-                    </div>
-                    <Rating :modelValue="item.rating" readonly :cancel="false"></Rating>
+                    <div v-show="isDisplay('name')" class="text-2xl font-bold text-surface-900 dark:text-surface-0">
+                      {{ item.name }}</div>
+                    <Rating v-show="isDisplay('rating')" :modelValue="item.rating" readonly :cancel="false"></Rating>
                     <div class="flex items-center gap-3">
-                      <span class="flex items-center gap-2">
+                      <span v-show="isDisplay('category')" class="flex items-center gap-2">
                         <i class="pi pi-tag"></i>
                         <span class="font-semibold">{{ item.category }}</span>
                       </span>
-                      <Tag :value="item.status"></Tag>
+                      <Tag v-show="isDisplay('status')" :value="item.status"></Tag>
                     </div>
                   </div>
-                  <div class="flex flex-col items-center sm:items-end gap-3 sm:gap-2">
-                    <span class="text-2xl font-semibold">${{ item.price }}</span>
+                  <div class="w-full flex flex-row justify-between items-center sm:flex-col  sm:items-end gap-3 sm:gap-2">
+                    <span v-show="isDisplay('price')" class="text-2xl font-semibold">${{ item.price }}</span>
                     <div class="min-w-12 w-12">
                       <KTBButton class="w-full" icon="pi pi-trash" type="outlined" border-color="border-red-700"
                         text-color="text-red-700 dark:text-white" :disabled="item.status === 'OUTOFSTOCK'"
@@ -264,17 +287,29 @@ onMounted(() => {
     </div>
     <!-- # region dataview  -->
 
-    <Paginator v-model:first="first" class="mt-4" :rows="rowPerPage" :totalRecords="totalElement"
-      template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-      :pt="{ root: 'flex flex-wrap justify-start items-center', start: 'order-first me-auto', end: 'order-last ms-auto' }"
-      @page="onPageChange($event)">
-      <template #start>
-        Total {{ totalElement }} products ({{ recordPerPage }} per page)
-      </template>
-      <template #end>
-        <KTBDropdown v-model="rowPerPage" :item-list="ddlRowPerPage" @update:model-value="onRowPerPageChanged" />
-      </template>
-    </Paginator>
+    <div class="mt-4">
+      <Paginator v-model:first="first" class="hidden xl:block" :rows="rowPerPage" :totalRecords="totalElement"
+        template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+        :pt="{ root: 'flex flex-wrap justify-start items-center', start: 'order-first me-auto', end: 'order-last ms-auto' }"
+        @page="onPageChange($event)">
+        <template #start>
+          Total {{ totalElement }} products ({{ recordPerPage }} per page)
+        </template>
+        <template #end>
+          <KTBDropdown v-model="rowPerPage" :item-list="ddlRowPerPage" @update:model-value="onRowPerPageChanged" />
+        </template>
+      </Paginator>
+
+      <div class="block xl:hidden">
+        <Paginator class="mx-auto" v-model:first="first" :rows="rowPerPage" :totalRecords="totalElement"
+          template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+          currentPageReportTemplate="Showing {first} of {totalRecords}" @page="onPageChange($event)">
+          <template #end>
+            <KTBDropdown v-model="rowPerPage" :item-list="ddlRowPerPage" @update:model-value="onRowPerPageChanged" />
+          </template>
+        </Paginator>
+      </div>
+    </div>
 
     <Offcanvas v-model="showFilter" tagName="aside" position="right" size="medium" class="bg-white dark:bg-black"
       noBackdrop @close="showFilter = false">
