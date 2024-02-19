@@ -222,8 +222,9 @@ onBeforeMount(() => {
           <!-- post-title -->
           <div class="flex items-center justify-end flex-1 gap-2 ps-3 basis-4 max-w-36">
             <slot name="post-title" />
-            <KTBButton class="min-w-10 w-10" icon="pi pi-times" type="outlined" border-color="border-gray-700"
-              text-color="text-gray-700 dark:text-white" @click="close" />
+            <KTBButton class="min-w-10 w-10" icon="pi pi-times" type="outlined"
+              border-color="border-gray-700 dark:border-white" text-color="text-gray-700 dark:text-white"
+              @click="close" />
           </div>
         </div>
         <!-- wrapper -->

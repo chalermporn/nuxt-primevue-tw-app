@@ -54,7 +54,7 @@ const modelValue = computed({
 <template>
     <div>
         <label>{{ label }}</label>
-        <InputNumber class="w-full" v-model="modelValue" :maxFractionDigits="decimal"
+        <InputNumber class="w-full text-black" v-model="modelValue" :maxFractionDigits="decimal"
             @input="(e) => (modelValue = e.value)" />
         <small class="p-error text-red-500" v-if="isSubmit && required && !modelValue">{{ label }} is required.</small>
     </div>

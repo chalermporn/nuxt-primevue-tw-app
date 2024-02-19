@@ -56,12 +56,13 @@ onMounted(() => {
 <template>
     <KTBDialog v-model="modelValue" header="Edit Products" class="p-fluid" @on-click-no="hide" @on-click-yes="updateProduct"
         modal-width="650px">
-        <div class="flex gap-4">
-            <div class="w-1/3">
-                <img class="rounded" :src="`https://primefaces.org/cdn/primevue/images/product/${productDetail.image}`"
+        <div class="flex flex-row gap-4 max-sm:flex-col">
+            <div class="w-1/3 max-sm:w-full">
+                <img class="mx-auto rounded"
+                    :src="`https://primefaces.org/cdn/primevue/images/product/${productDetail.image}`"
                     :alt="productDetail.image" />
             </div>
-            <div class="w-2/3 flex flex-col gap-2">
+            <div class=" flex flex-col gap-2 w-2/3 max-sm:w-full">
                 <KTBInputText v-model.trim="productDetail.name" label="Product name" name="productName" />
                 <KTBInputTextarea v-model="productDetail.description" label="Description" />
                 <KTBDropdown v-model="productDetail.status" label="Status" :item-list="statuses"

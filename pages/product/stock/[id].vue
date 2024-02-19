@@ -6,6 +6,7 @@ const route = useRoute()
 const router = useRouter()
 const routeId = computed(() => String(route.params.id))
 const productDetail = ref()
+const isLoading = ref(true)
 
 const getStatusLabel = (status: string) => {
     switch (status) {
@@ -24,30 +25,53 @@ const editProduct = () => {
     router.push(`${route.fullPath}/edit`)
 }
 
+const getProductDetailById = (id: string) => {
+    isLoading.value = true
+    ProductService.getProductDetailById(routeId.value).then((data) => {
+        setTimeout(() => {
+            isLoading.value = false
+            productDetail.value = data[0]
+        }, 1000)
+    });
+}
+
 watch(routeId, async (newId) => {
     try {
-        const data = await ProductService.getProductDetailById(newId)
-        productDetail.value = data[0]
+        getProductDetailById(newId)
     } catch (error) {
         console.error('Error fetching product detail:', error)
     }
 })
 
 onMounted(() => {
-    ProductService.getProductDetailById(routeId.value).then((data) => (productDetail.value = data[0]));
+    getProductDetailById(routeId.value)
 });
 </script>
 <template>
     <PreviewLayout>
         <template #title>
-            <div>{{ productDetail?.name }}</div>
+            <KTBLoadingSkeleton v-if="isLoading" />
+            <div v-else>{{ productDetail?.name }}</div>
         </template>
         <template #post-title>
-            <KTBButton icon="pi pi-pencil" label="Edit" type="outlined" border-color="border-gray-700"
-                text-color="text-gray-700 dark:text-white" @click="editProduct" />
+            <KTBLoadingSkeleton v-if="isLoading" width="88.31px" />
+            <KTBButton v-else icon="pi pi-pencil" label="Edit" type="outlined"
+                border-color="border-gray-700 dark:border-white" text-color="text-gray-700 dark:text-white"
+                @click="editProduct" />
         </template>
         <div class="flex flex-col gap-3">
-            <div class="flex gap-4">
+
+            <div v-if="isLoading" class="flex gap-4">
+                <KTBLoadingSkeleton width="112px" height="74.66px" />
+                <div class="flex flex-col justify-between">
+                    <div class="">
+                        <KTBLoadingSkeleton width="100px" />
+                        <KTBLoadingSkeleton class="mt-1" />
+                    </div>
+                    <KTBLoadingSkeleton />
+                </div>
+            </div>
+            <div v-else class="flex gap-4">
                 <img class="w-28 rounded object-cover"
                     :src="`https://primefaces.org/cdn/primevue/images/product/${productDetail?.image}`" />
                 <div class="flex flex-col justify-between">
@@ -60,12 +84,26 @@ onMounted(() => {
                 </div>
             </div>
             <hr />
-            <h2 class="font-semibold">Details</h2>
-            <div>Price: <span class="text-gray-400">{{ `$${productDetail?.price}` }}</span></div>
-            <div>Category: <span class="text-gray-400">{{ productDetail?.category.value }}</span></div>
-            <div>Quantity: <span class="text-gray-400">{{ productDetail?.quantity }}</span></div>
+            <div v-if="isLoading" class="flex flex-col gap-3">
+                <KTBLoadingSkeleton />
+                <KTBLoadingSkeleton class="mt-1" width="100px" />
+                <KTBLoadingSkeleton class="mt-1" width="100px" />
+                <KTBLoadingSkeleton class="mt-1" width="100px" />
+            </div>
+            <div v-else class="flex flex-col gap-3">
+                <h2 class="font-semibold">Details</h2>
+                <div>Price: <span class="text-gray-400">{{ `$${productDetail?.price}` }}</span></div>
+                <div>Category: <span class="text-gray-400">{{ productDetail?.category }}</span></div>
+                <div>Quantity: <span class="text-gray-400">{{ productDetail?.quantity }}</span></div>
+            </div>
             <hr />
-            <div>Review:
+
+            <div v-if="isLoading">
+                <KTBLoadingSkeleton />
+                <KTBLoadingSkeleton class="mt-1" width="100px" />
+            </div>
+            <div v-else>
+                <div>Review:</div>
                 <Rating :modelValue="productDetail?.rating" :readonly="true" :cancel="false" />
             </div>
             <NuxtPage page-key="child" />

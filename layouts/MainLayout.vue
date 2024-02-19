@@ -1,6 +1,4 @@
 <script setup>
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
-
 const items = ref([
   {
     key: '0',
@@ -10,7 +8,7 @@ const items = ref([
     expanded: false, // Add expanded property
     items: [
       {
-        key: '0_2',
+        key: '0_1',
         label: 'Stocks',
         url: '/product/stock',
         icon: '',
@@ -19,18 +17,6 @@ const items = ref([
     ],
   },
 ]);
-
-const breakpoints = useBreakpoints(breakpointsTailwind)
-provide('screen', {
-  isSm: breakpoints.greaterOrEqual('sm'),
-  isMd: breakpoints.greaterOrEqual('md'),
-  isLg: breakpoints.greaterOrEqual('lg'),
-  isXl: breakpoints.greaterOrEqual('xl'),
-  isMaxSm: breakpoints.smaller('sm'),
-  isMaxMd: breakpoints.smaller('md'),
-  isMaxLg: breakpoints.smaller('lg'),
-  isMaxXl: breakpoints.smaller('xl'),
-})
 
 const isShowSidebar = ref(false)
 </script>
@@ -68,7 +54,6 @@ const isShowSidebar = ref(false)
 
   #mainLayout main {
     overflow: auto;
-
     grid-area: main;
   }
 
