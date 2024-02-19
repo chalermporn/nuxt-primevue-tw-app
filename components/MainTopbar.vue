@@ -8,13 +8,14 @@ defineProps({
 const emit = defineEmits<{
     (e: 'toggle-sidebar'): any
 }>()
+const { isMaxMd } = inject('screen') as any
 
 </script>
 <template>
     <header>
-        <Menubar class="px-4 border-none bg-gray-100 dark:bg-black">
+        <Menubar class="p-4 border-none bg-gray-100 dark:bg-black">
             <template #start>
-                <div class="w-12 flex justify-center max-md:block md:hidden">
+                <div v-if="isMaxMd" class="w-12 flex justify-center">
                     <i class="pi pi-bars" @click="emit('toggle-sidebar')" />
                 </div>
             </template>

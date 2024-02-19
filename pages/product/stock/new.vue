@@ -2,7 +2,9 @@
 import { useRoute, useRouter } from 'vue-router'
 import ProductService from '~/server/api/productService';
 import { ddl } from '~/server/mockdata/dropdown';
+import { useToast } from "primevue/usetoast";
 
+const toast = useToast();
 const route = useRoute()
 const router = useRouter()
 const submitted = ref(false)
@@ -29,8 +31,9 @@ const saveProduct = () => {
     product.value.image = 'product-placeholder.svg';
     product.value.status = product.value.status ? (product.value.status).toUpperCase() : 'INSTOCK';
 
-    ProductService.addProducts(product)
+    ProductService.addProducts(product.value)
 
+    toast.add({ severity: 'success', summary: 'Success Message', detail: 'Message Content', life: 3000 });
     hide()
 }
 
@@ -70,5 +73,6 @@ const modelValue = computed({
         <KTBInputNumber v-model="product.price" label="Price" :decimal="2" />
         <KTBInputNumber v-model="product.quantity" label="Quantity" />
     </KTBDialog>
+    <Toast />
 </template>
 <style scoped></style>

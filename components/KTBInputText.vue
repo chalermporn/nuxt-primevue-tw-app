@@ -42,7 +42,7 @@ const modelValue = computed(() => (props.modelValue))
 <template>
     <div>
         <label>{{ label }}</label>
-        <InputText class="w-full" :value="modelValue" :name="name" :placeholder="placeholder"
+        <InputText class="w-full bg-white dark:bg-transparent" :value="modelValue" :name="name" :placeholder="placeholder"
             @input="(e) => (emit('update:modelValue', e.target.value))" />
         <small class="p-error text-red-500" v-if="isSubmit && required && !modelValue">{{ label }} is required.</small>
     </div>

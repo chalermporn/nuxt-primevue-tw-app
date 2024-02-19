@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import KTBButton from '~/components/KTBButton.vue';
-
 const props = defineProps({
     modelValue: {
         type: Boolean,
@@ -50,12 +48,18 @@ const modelValue = computed({
     },
 })
 
-
+const { isMaxSm } = inject('screen') as any
 
 </script>
 <template>
-    <Dialog v-model:visible="modelValue" :style="{ width: `${modalWidth}` }" :header="header" :modal="modal"
-        :pt="{ root: 'bg-white dark:bg-gray-700 rounded' }">
+    <Dialog class="rounded-t-lg" v-model:visible="modelValue" :style="{ width: `${modalWidth}` }" :header="header"
+        :modal="modal" :pt="{
+            root: [
+                'bg-white dark:bg-gray-700 rounded-lg',
+                isMaxSm ? '!w-full max-h-[70%] rounded-t-lg rounded-b-none' : 'rounded-lg'
+            ],
+            mask: 'p-0 transition duration-200 bg-black/40 backdrop-blur-sm'
+        }" :position="isMaxSm ? 'bottom' : ''">
         <div class="flex flex-col gap-4">
             <slot />
             <slot name="footer">

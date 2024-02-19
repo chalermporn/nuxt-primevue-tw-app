@@ -442,6 +442,14 @@ export const ProductService = {
 
     addProducts(product: any){
         products.value.push(product)
+    },
+
+    deleteProducts(id: string){
+        products.value = products.value.filter(val => val.id !== id);
+    },
+
+    deleteSelectedProducts(selectedProducts: any){
+        products.value = products.value.filter(val => !selectedProducts.includes(val));
     }
 };
 
