@@ -5,7 +5,6 @@ const items = ref([
     label: 'Product',
     icon: 'pi pi-slack',
     badge: 5,
-    expanded: false, // Add expanded property
     items: [
       {
         key: '0_1',

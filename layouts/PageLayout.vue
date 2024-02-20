@@ -20,9 +20,7 @@ defineProps({
             <hr />
             <div class="text-2xl">{{ pageTitle }}</div>
         </header>
-        <main>
-            <slot />
-        </main>
+        <slot />
     </div>
 </template>
 <style scoped></style>

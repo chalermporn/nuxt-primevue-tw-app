@@ -1,7 +1,7 @@
 <script setup>
 import { FilterMatchMode } from 'primevue/api';
 import { useToast } from 'primevue/usetoast';
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue';
 import ProductService from '~/server/api/productService';
 import { ddl } from '~/server/mockdata/dropdown';
@@ -167,22 +167,8 @@ const deleteSelectedProducts = () => {
 };
 
 const getStatusLabel = (status) => {
-  switch (status) {
-    case 'INSTOCK':
-      return 'success';
-
-    case 'LOWSTOCK':
-      return 'warning';
-
-    case 'OUTOFSTOCK':
-      return 'danger';
-
-    default:
-      return null;
-  }
+  return helpers.getStatusLabel(status)
 };
-
-
 
 const viewDetail = (id) => {
   router.push(`/product/stock/${id}`);
@@ -356,7 +342,8 @@ onMounted(() => {
     </div>
     <!-- # region dataview  -->
 
-    <div class="mt-4">
+    <div
+      class="mt-4 max-xl:mx-auto max-xl:sticky max-xl:bottom-4 max-xl:w-[fit-content] max-xl:rounded-lg max-xl:shadow-2xl">
       <Paginator v-model:first="first" class="hidden xl:block" :rows="rowPerPage" :totalRecords="totalElement"
         template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
         :pt="{ root: 'flex flex-wrap justify-start items-center', start: 'order-first me-auto', end: 'order-last ms-auto' }"
@@ -370,8 +357,8 @@ onMounted(() => {
       </Paginator>
 
       <div class="block xl:hidden">
-        <Paginator class="mx-auto" v-model:first="first" :rows="rowPerPage" :totalRecords="totalElement"
-          template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+        <Paginator class="mx-auto bg-white rounded-lg dark:bg-black" v-model:first="first" :rows="rowPerPage"
+          :totalRecords="totalElement" template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
           currentPageReportTemplate="Showing {first} of {totalRecords}"
           :pt="{ firstPageButton: 'pr-2.5 sm:pr-4', previousPageButton: 'px-2.5 sm:px-4', nextPageButton: 'px-2.5 sm:px-4', lastPageButton: 'pl-2.5 sm:pl-4' }"
           @page="onPageChange($event)">

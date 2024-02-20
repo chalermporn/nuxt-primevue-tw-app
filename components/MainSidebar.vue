@@ -1,5 +1,4 @@
-<script setup lang="ts">
-import type { PanelMenuPassThroughMethodOptions } from 'primevue/panelmenu';
+<script setup>
 import { ref, inject } from 'vue';
 
 const props = defineProps({
@@ -12,28 +11,37 @@ const props = defineProps({
     }
 })
 
-enum Mode {
-    DARK = 'dark',
-    LIGHT = 'light',
-    SYSTEM = 'system'
+const MODE = {
+    DARK: 'dark',
+    LIGHT: 'light',
+    SYSTEM: 'system'
 }
 
-const colorMode: any = inject('colorMode')
+const route = useRoute()
+const colorMode = inject('colorMode')
 const expandedKeys = ref({});
 const isShowSidebar = computed(() => props.isShowSidebar)
 const isCollapsed = ref(false);
+const activeMenu = computed(() => [...helpers.flatMap(props.menuItems, 'items', 'url', route.path)])
 
-const switchMode = (_mode?: string) => {
+const switchMode = (_mode) => {
     if (_mode) {
         colorMode.preference = _mode
     } else {
-        if (colorMode.preference === Mode.LIGHT || colorMode.preference === Mode.SYSTEM) {
-            colorMode.preference = Mode.DARK
-        } else if (colorMode.preference === Mode.DARK) {
-            colorMode.preference = Mode.LIGHT
+        if (colorMode.preference === MODE.LIGHT || colorMode.preference === MODE.SYSTEM) {
+            colorMode.preference = MODE.DARK
+        } else if (colorMode.preference === MODE.DARK) {
+            colorMode.preference = MODE.LIGHT
         }
     }
 }
+const test = () => {
+    console.log('test')
+}
+
+onBeforeMount(() => {
+    expandedKeys.value = activeMenu.value?.reduce((a, { key }) => ({ ...a, [key]: true }), {})
+})
 </script>
 <template>
     <Offcanvas v-model="isShowSidebar" tagName="aside" position="left" activeScreen="max-md" size="small" hideHeader
@@ -78,7 +86,7 @@ const switchMode = (_mode?: string) => {
                                 }
                             },
                             menucontent: 'border-none',
-                            headercontent: ({ context }: PanelMenuPassThroughMethodOptions) => {
+                            headercontent: ({ context }) => {
                                 return { class: ['text-gray-400 rounded-md', { 'text-gray-700 dark:text-white dark:bg-gray-700': context.active }] };
                             },
                             content: ({ context }) => {
@@ -92,9 +100,9 @@ const switchMode = (_mode?: string) => {
                                 ]">
                                     <div class="flex gap-2 mb-1">
                                         <i v-if="item.icon" :class="[
-                                                'my-auto',
-                                                item.icon
-                                            ]" />
+                                            'my-auto',
+                                            item.icon
+                                        ]" />
                                         <span :class="[
                                             { 'hidden': isCollapsed && root },
                                             { 'font-semibold': item.items }
@@ -119,7 +127,7 @@ const switchMode = (_mode?: string) => {
 
                     <div class="mt-auto">
                         <template v-if="isCollapsed">
-                            <Button class="mx-auto" :icon="colorMode.preference === Mode.DARK ? 'pi pi-moon' : 'pi pi-sun'"
+                            <Button class="mx-auto" :icon="colorMode.preference === MODE.DARK ? 'pi pi-moon' : 'pi pi-sun'"
                                 :pt="{ root: 'w-10 h-10 rounded-full flex justify-center items-center border border-solid border-gray-700 dark:text-white dark:bg-gray-700' }"
                                 @click="switchMode('')" />
                         </template>
@@ -127,11 +135,11 @@ const switchMode = (_mode?: string) => {
                             <div class="flex gap-1">
                                 <KTBButton label="Light" icon="pi pi-sun" type="outlined"
                                     border-color="border-gray-700 dark:border-none"
-                                    text-color="text-gray-700 dark:text-gray-400" @click="switchMode(Mode.LIGHT)">
+                                    text-color="text-gray-700 dark:text-gray-400" @click="switchMode(MODE.LIGHT)">
                                 </KTBButton>
                                 <KTBButton label="Dark" icon="pi pi-moon" type="contained"
                                     bg-color="bg-none dark:bg-gray-700" text-color="text-gray-400 dark:text-white"
-                                    @click="switchMode(Mode.DARK)">
+                                    @click="switchMode(MODE.DARK)">
                                 </KTBButton>
                             </div>
                         </template>

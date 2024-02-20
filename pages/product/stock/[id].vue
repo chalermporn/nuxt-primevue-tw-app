@@ -9,16 +9,7 @@ const productDetail = ref()
 const isLoading = ref(true)
 
 const getStatusLabel = (status: string) => {
-    switch (status) {
-        case 'INSTOCK':
-            return 'success';
-
-        case 'LOWSTOCK':
-            return 'warning';
-
-        case 'OUTOFSTOCK':
-            return 'danger';
-    }
+    return helpers.getStatusLabel(status)
 };
 
 const editProduct = () => {
