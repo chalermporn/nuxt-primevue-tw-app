@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ProductService from '~/server/api/productService';
+import { ProductServiceClient } from '~/client_api/productServiceClient';
 import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
@@ -16,9 +16,9 @@ const editProduct = () => {
     router.push(`${route.fullPath}/edit`)
 }
 
-const getProductDetailById = (id: string) => {
+const getProductDetailById = () => {
     isLoading.value = true
-    ProductService.getProductDetailById(routeId.value).then((data) => {
+    ProductServiceClient.getProductDetailById(routeId.value).then((data) => {
         setTimeout(() => {
             isLoading.value = false
             productDetail.value = data[0]
@@ -26,16 +26,16 @@ const getProductDetailById = (id: string) => {
     });
 }
 
-watch(routeId, async (newId) => {
+watch(routeId, () => {
     try {
-        getProductDetailById(newId)
+        getProductDetailById()
     } catch (error) {
         console.error('Error fetching product detail:', error)
     }
 })
 
 onMounted(() => {
-    getProductDetailById(routeId.value)
+    getProductDetailById()
 });
 </script>
 <template>

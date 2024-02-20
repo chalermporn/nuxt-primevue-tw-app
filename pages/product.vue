@@ -3,7 +3,7 @@ import { FilterMatchMode } from 'primevue/api';
 import { useToast } from 'primevue/usetoast';
 import { useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue';
-import ProductService from '~/server/api/productService';
+import { ProductServiceClient } from '~/client_api/productServiceClient';
 import { ddl } from '~/server/mockdata/dropdown';
 
 const toast = useToast();
@@ -109,7 +109,7 @@ const clearFilter = () => {
 const getProducts = () => {
   isTableDataLoading.value = true
   setTimeout(() => {
-    ProductService.getProductsByPaging(page.value, rowPerPage.value, filterOrder.value, filterOrderCol.value, filterType.value, filterByCategory.value, filtersSearchBox.value).then((data) => {
+    ProductServiceClient.getProductsByPaging(page.value, rowPerPage.value, filterOrder.value, filterOrderCol.value, filterType.value, filterByCategory.value, filtersSearchBox.value).then((data) => {
       products.value = data.products;
       totalElement.value = data.totalElement;
       isTableDataLoading.value = false
@@ -155,13 +155,13 @@ const confirmDeleteProduct = (prod) => {
 
 const deleteProduct = () => {
   deleteProductDialog.value = false;
-  ProductService.deleteProducts(product.value.id)
+  ProductServiceClient.deleteProducts(product.value.id)
   toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
   getProducts()
 };
 
 const deleteSelectedProducts = () => {
-  ProductService.deleteSelectedProducts(selectedProducts.value)
+  ProductServiceClient.deleteSelectedProducts(selectedProducts.value)
   toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
   getProducts()
 };

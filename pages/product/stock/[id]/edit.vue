@@ -1,6 +1,6 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
-import { ProductService } from '~/server/api/productService';
+import { ProductServiceClient } from '~/client_api/productServiceClient';
 import { ddl } from '~/server/mockdata/dropdown';
 
 const route = useRoute()
@@ -40,17 +40,22 @@ const hide = () => {
     router.replace(`/product/stock/${routeId.value}`)
 }
 
-watch(routeId, async (newId) => {
-    try {
-        const data = await ProductService.getProductDetailById(newId)
+const getProductDetailById = () => {
+    ProductServiceClient.getProductDetailById(routeId.value).then((data) => {
         productDetail.value = data[0]
+    });
+}
+
+watch(routeId, () => {
+    try {
+        getProductDetailById()
     } catch (error) {
         console.error('Error fetching product detail:', error)
     }
 })
 
 onMounted(() => {
-    ProductService.getProductDetailById(routeId.value).then((data) => (productDetail.value = data[0]));
+    getProductDetailById()
 });
 </script>
 <template>

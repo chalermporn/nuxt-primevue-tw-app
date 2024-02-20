@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router'
-import ProductService from '~/server/api/productService';
+import { ProductServiceClient } from '~/client_api/productServiceClient';
 import { ddl } from '~/server/mockdata/dropdown';
 import { useToast } from "primevue/usetoast";
 
@@ -31,7 +31,7 @@ const saveProduct = () => {
     product.value.image = 'product-placeholder.svg';
     product.value.status = product.value.status ? (product.value.status).toUpperCase() : 'INSTOCK';
 
-    ProductService.addProducts(product.value)
+    ProductServiceClient.addProducts(product.value)
 
     toast.add({ severity: 'success', summary: 'Success Message', detail: 'Message Content', life: 3000 });
     hide()
