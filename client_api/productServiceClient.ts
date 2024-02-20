@@ -363,7 +363,7 @@ const products = ref([
     }
 ])
 
-export const ProductService = {    
+export const ProductServiceClient = {    
     getProductsData() {
         return products.value
     },
@@ -452,7 +452,3 @@ export const ProductService = {
         products.value = products.value.filter(val => !selectedProducts.includes(val));
     }
 };
-
-export default ProductService;
-
-
