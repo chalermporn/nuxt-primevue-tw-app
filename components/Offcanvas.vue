@@ -81,7 +81,7 @@ const emit = defineEmits(['update:modelValue', 'close'])
 // inject
 const { isMd, isMaxMd, isLg } = inject('screen')
 // const { isAnimating, animate } = inject('animate')
-const dialog = inject('dialog')
+// const dialog = inject('dialog')
 
 const ACTIVE = 'bg-gray-0 dark:bg-bluegray-90 md:border-gray-20 dark:md:border-bluegray-60/50 z-20'
 const DEACTIVE = 'bg-gray-0 dark:bg-bluegray-100'
@@ -176,13 +176,10 @@ onBeforeMount(() => {
   <ClientOnly>
     <Teleport :disabled="isActive.value && !alwaysShow" to="body">
       <!-- backdrop -->
-      <Backdrop v-if="modelValue && !noBackdrop" @click="close" :class="[`z-20 ${backdropClass}`, {
-        'max-md:z-[2200]': dialog
-      }]" />
+      <Backdrop v-if="modelValue && !noBackdrop" @click="close" :class="[`z-20 ${backdropClass}`]" />
       <!-- offcanvas -->
       <component v-bind="$attrs" :is="tagName" :class="[
         'z-20 duration-200',
-        // isAnimating ? `z-20 duration-200 ${dialog ? 'max-md:z-[2200]' : ''}` : 'duration-0',
         pt[activeClass][position],
         {
           'w-60': (size === 'small' && isHorizental),
@@ -193,7 +190,7 @@ onBeforeMount(() => {
           'md:w-[calc(100vw-16rem)] max-md:w-full': (size === 'xl' && isHorizental),
           '!shadow-xl drop-shadow-2xl': (activeScreen === 'default' && noBackdrop),
           'z-30': (modelValue && !isActive.value),
-          'max-md:z-[2200]': (modelValue && !isActive.value && dialog),
+          'max-md:z-[2200]': (modelValue && !isActive.value),
           'dark:md:border-bluegray-70/80': alwaysShow,
           'dark:md:border-r': position === 'left',
           'dark:md:border-l': position === 'right',

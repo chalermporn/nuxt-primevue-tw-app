@@ -57,7 +57,7 @@ const filtersSearchBox = ref('')
 const recordPerPage = ref(5)
 const totalElement = ref(0)
 const ddlRowPerPage = ref(ddl.rowPerPage)
-const rowPerPage = ref('5');
+const rowPerPage = ref(5);
 const page = ref(1)
 
 const isDisplay = (fields) => {
@@ -96,7 +96,7 @@ const onFilterCategoryChange = () => {
 const clearFilter = () => {
   page.value = 1
   first.value = 0
-  rowPerPage.value = '5'
+  rowPerPage.value = 5
   filterOrder.value = ''
   filterOrderCol.value = ''
   filterType.value = ''
@@ -257,8 +257,7 @@ onMounted(() => {
     </section>
     <!-- # end region datalist table -->
 
-    <KTBDialog v-model:visible="deleteProductDialog" @on-click-no="deleteProductDialog = false"
-      @on-click-yes="deleteProduct">
+    <KTBDialog v-model="deleteProductDialog" @on-click-no="deleteProductDialog = false" @on-click-yes="deleteProduct">
       <div class="confirmation-content">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
         <span v-if="product">Are you sure you want to delete <b>{{ product.name }}</b>?</span>
@@ -364,8 +363,7 @@ onMounted(() => {
           @page="onPageChange($event)">
           <template #end>
             <div class="ml-4">
-              <KTBDropdown v-model="rowPerPage" class="ml-2" :item-list="ddlRowPerPage"
-                @update:model-value="onRowPerPageChanged" />
+              <KTBDropdown v-model="rowPerPage" :item-list="ddlRowPerPage" @update:model-value="onRowPerPageChanged" />
             </div>
           </template>
         </Paginator>

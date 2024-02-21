@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-import KTBBreadcrumb from "../components/KTBBreadcrumb"
-
 defineProps({
     pageTitle: {
         type: String,
