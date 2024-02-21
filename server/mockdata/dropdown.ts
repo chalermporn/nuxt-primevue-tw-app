@@ -25,8 +25,8 @@ export const ddl = {
         { label: 'Fitness', value: 'Fitness' },
     ],
     rowPerPage: [
-        { label: '5', value: '5' },
-        { label: '10', value: '10' },
+        { label: '5', value: 5 },
+        { label: '10', value: 10 },
     ],
     displayTableColumn: [
         { field: 'image', header: 'Image' },

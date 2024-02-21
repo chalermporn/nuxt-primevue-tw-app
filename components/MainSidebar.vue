@@ -76,10 +76,10 @@ onBeforeMount(() => {
                                 return {
                                     ...(isCollapsed ? {
                                         class: [
-                                            'w-52 peer-[&:not(:hover)]:hidden group/toggleablecontent transform',
+                                            'w-40 peer-[&:not(:hover)]:hidden group/toggleablecontent transform',
                                             'bg-white dark:bg-black',
                                             { 'bg-gray-700': context?.focused },
-                                            'peer-hover:rounded-r-lg peer-hover:ps-1 peer-hover:pe-4 peer-hover:pt-3 peer-hover:pb-4 peer-hover:!block peer-hover:absolute peer-hover:left-16 peer-hover:-mt-12 peer-hover:bg-gray-0 peer-hover:dark:bg-bluegray-80 peer-hover:shadow-md',
+                                            'peer-hover:rounded-r-lg peer-hover:ps-1 peer-hover:pe-4 peer-hover:pt-2 peer-hover:pb-2 peer-hover:!block peer-hover:absolute peer-hover:left-16 peer-hover:-mt-12 peer-hover:bg-gray-0 peer-hover:dark:bg-bluegray-80 peer-hover:shadow-md',
                                             { '!duration-0 !animation-none hover:!block hover:rounded-r-lg hover:absolute hover:left-16 hover:-mt-12 hover:p-1 hover:pe-4 hover:pt-3 hover:pb-4 hover:bg-gray-0 hover:dark:bg-bluegray-80 hover:shadow-md hover:z-10': true },
                                         ],
                                     } : {})
@@ -96,7 +96,7 @@ onBeforeMount(() => {
                             <template #item="{ item, root }">
                                 <NuxtLink :to="item.url" :class="[
                                     'flex justify-center items-center px-3 py-2 cursor-pointer rounded-md',
-                                    { 'ml-7 mt-1': !root }
+                                    { 'ml-7 mt-1': !root && !isCollapsed }
                                 ]">
                                     <div class="flex gap-2 mb-1">
                                         <i v-if="item.icon" :class="[
