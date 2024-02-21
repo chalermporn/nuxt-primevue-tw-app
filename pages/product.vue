@@ -184,7 +184,7 @@ onMounted(() => {
     <Toast />
     <!-- # region datalist table -->
     <section>
-      <div class="relative mb-4 flex gap-4 justify-between">
+      <div class="relative flex gap-4 justify-between">
         <div class="flex gap-4">
           <KTBButton label="New" icon="pi pi-plus" type="contained" bg-color="bg-green-700" text-color="text-white"
             @click="openNew" />
@@ -211,8 +211,8 @@ onMounted(() => {
         <DataTable ref="dt" :value="products" v-model:selection="selectedProducts" resizableColumns columnResizeMode="fit"
           :sort-field="(filterOrderCol)?.toLowerCase()" :sort-order="sortOrder" showGridlines dataKey="id"
           :paginator="false" :rows="rowPerPage" :filters="filters"
-          :pt="{ thead: 'bg-green-700 text-white', bodyrow: 'cursor-pointer' }" @row-click="viewDetail($event.data.id)"
-          @sort="onSort">
+          :pt="{ thead: 'bg-green-700 text-white', bodyrow: 'cursor-pointer' }"
+          :ptOptions="{ mergeSections: true, mergeProps: true }" @row-click="viewDetail($event.data.id)" @sort="onSort">
           <template #header>
             <div style="text-align:left">
               <KTBMultiSelect v-model="selectedColumns" :options="columns" optionLabel="header" />
@@ -343,31 +343,31 @@ onMounted(() => {
 
     <div
       class="mt-4 max-xl:mx-auto max-xl:sticky max-xl:bottom-4 max-xl:w-[fit-content] max-xl:rounded-lg max-xl:shadow-2xl">
-      <Paginator v-model:first="first" class="hidden xl:block" :rows="rowPerPage" :totalRecords="totalElement"
+      <KTBPaginator class="hidden xl:block" v-model:first="first" :rows="rowPerPage" :totalRecords="totalElement"
         template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
         :pt="{ root: 'flex flex-wrap justify-start items-center', start: 'order-first me-auto', end: 'order-last ms-auto' }"
-        @page="onPageChange($event)">
+        @onPageChange="onPageChange($event)">
         <template #start>
           Total {{ totalElement }} products ({{ recordPerPage }} per page)
         </template>
         <template #end>
           <KTBDropdown v-model="rowPerPage" :item-list="ddlRowPerPage" @update:model-value="onRowPerPageChanged" />
         </template>
-      </Paginator>
+      </KTBPaginator>
 
-      <div class="block xl:hidden">
-        <Paginator class="mx-auto bg-white rounded-lg dark:bg-black" v-model:first="first" :rows="rowPerPage"
-          :totalRecords="totalElement" template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
-          currentPageReportTemplate="Showing {first} of {totalRecords}"
-          :pt="{ firstPageButton: 'pr-2.5 sm:pr-4', previousPageButton: 'px-2.5 sm:px-4', nextPageButton: 'px-2.5 sm:px-4', lastPageButton: 'pl-2.5 sm:pl-4' }"
-          @page="onPageChange($event)">
-          <template #end>
-            <div class="ml-4">
-              <KTBDropdown v-model="rowPerPage" :item-list="ddlRowPerPage" @update:model-value="onRowPerPageChanged" />
-            </div>
-          </template>
-        </Paginator>
-      </div>
+      <KTBPaginator class="flex xl:hidden mx-auto bg-white rounded-lg dark:bg-black" v-model:first="first"
+        :rows="rowPerPage" :totalRecords="totalElement"
+        template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+        currentPageReportTemplate="Showing {first} of {totalRecords}"
+        :pt="{ firstPageButton: 'pr-2.5', previousPageButton: 'px-2.5 sm:px-4', nextPageButton: 'px-2.5 sm:px-4', lastPageButton: 'pl-2.5' }"
+        @onPageChange="onPageChange($event)">
+        <template #end>
+          <div class="ml-4">
+            <KTBDropdown class="mx-auto" v-model="rowPerPage" :item-list="ddlRowPerPage"
+              @update:model-value="onRowPerPageChanged" />
+          </div>
+        </template>
+      </KTBPaginator>
     </div>
 
     <Offcanvas v-model="showFilter" tagName="aside" position="right" size="medium" class="bg-white dark:bg-black"
