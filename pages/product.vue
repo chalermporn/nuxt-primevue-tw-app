@@ -347,7 +347,7 @@ onMounted(() => {
     <!-- # region dataview  -->
 
     <div
-      class="mt-4 max-xl:mx-auto max-xl:sticky max-xl:bottom-4 max-xl:w-[fit-content] max-xl:rounded-lg max-xl:shadow-2xl">
+      class="mt-4 max-xl:mx-auto max-xl:sticky max-xl:bottom-4 max-xl:w-[fit-content] max-xl:rounded-lg max-xl:shadow-sm max-xl:shadow-black dark:shadow-white">
       <KTBPaginator class="hidden xl:block" v-model:first="first" :rows="rowPerPage" :totalRecords="totalElement"
         template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
         :pt="{ root: 'flex flex-wrap justify-start items-center', start: 'order-first me-auto', end: 'order-last ms-auto' }"
@@ -364,7 +364,7 @@ onMounted(() => {
         :rows="rowPerPage" :totalRecords="totalElement"
         template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
         currentPageReportTemplate="Showing {first} of {totalRecords}"
-        :pt="{ current: 'text-white/80', firstPageButton: 'pr-2.5', previousPageButton: 'px-2.5 sm:px-4', nextPageButton: 'px-2.5 sm:px-4', lastPageButton: 'pl-2.5' }"
+        :pt="{ current: 'text-black dark:text-white/80', firstPageButton: 'pr-2.5', previousPageButton: 'px-2.5 sm:px-4', nextPageButton: 'px-2.5 sm:px-4', lastPageButton: 'pl-2.5' }"
         @onPageChange="onPageChange($event)">
         <template #end>
           <div class="ml-4">
