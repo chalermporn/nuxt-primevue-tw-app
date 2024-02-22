@@ -22,25 +22,48 @@ const products = ref([{
   rating: 5
 },]);
 const deleteProductDialog = ref(false);
-const deleteProductsDialog = ref(false);
 const product = ref({});
 const selectedProducts = ref();
-const first = ref();
+const first = ref(0);
 const filters = ref({
   'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 const submitted = ref(false);
 const pageTitle = 'Stock';
-const breadcrumbs = [
+const menu = ref([
   {
-    text: 'Product',
-    to: '/product',
+    key: '0',
+    label: 'Product',
+    icon: 'pi pi-slack',
+    badge: 5,
+    items: [
+      {
+        key: '0_1',
+        label: 'Stocks',
+        url: '/product/stock',
+        icon: '',
+        badge: 0,
+      },
+    ],
   },
-  {
-    text: 'Stock',
-    to: '/product/stock',
-  },
-];
+]);
+
+const route = useRoute()
+const breadcrumbs = computed(() => {
+  const routeItems = route.fullPath.split('/').filter(Boolean);
+  const breadcrumbItems = [];
+
+  for (let i = 0; i < routeItems.length; i++) {
+    const to = i === routeItems.length - 1 ? '/' : `/${routeItems[i]}`;
+
+    breadcrumbItems.push({
+      text: routeItems[i].charAt(0).toUpperCase() + routeItems[i].slice(1),
+      to,
+    });
+  }
+  return breadcrumbItems;
+});
+
 const columns = ref(ddl.displayTableColumn);
 const selectedColumns = ref(columns.value);
 

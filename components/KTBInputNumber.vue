@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = defineProps({
     modelValue: {
-        type: String,
+        type: Number,
         required: true,
         default: '',
     },

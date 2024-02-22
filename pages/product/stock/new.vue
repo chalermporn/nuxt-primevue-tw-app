@@ -18,8 +18,8 @@ const product = ref({
     description: '',
     status: '',
     category: '',
-    price: '',
-    quantity: '',
+    price: 0,
+    quantity: 0,
     rating: 0,
 })
 

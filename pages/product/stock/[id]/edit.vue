@@ -23,7 +23,7 @@ const productDetail = ref({
     status: '',
     category: '',
     price: 0,
-    quantity: '',
+    quantity: 0,
     rating: 0,
 })
 
