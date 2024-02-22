@@ -1,28 +1,28 @@
 <script setup lang="ts">
 const props = defineProps({
-    modelValue: {
-        type: String,
-        required: true,
-        default: '',
-    },
-    rows: {
-        type: Array,
-        required: false,
-        default: '',
-    },
-    totalRecords: {
+    first: {
         type: [String, Number],
         required: true,
         default: '',
     },
+    rows: {
+        type: Number,
+        required: false,
+        default: '',
+    },
+    totalRecords: {
+        type: Number,
+        required: false,
+        default: '',
+    },
     template: {
         type: String,
-        required: true,
+        required: false,
         default: '', //FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink
     },
     currentPageReportTemplate: {
         type: String,
-        required: true,
+        required: false,
         default: '',
     },
 })
@@ -38,7 +38,7 @@ const onPageChange = (e: any) => {
 
 const modelValue = computed({
     get() {
-        return props.modelValue
+        return props.first
     },
     set(value: any) {
         emit('update:modelValue', value)

@@ -43,7 +43,6 @@ const modelValue = computed({
         return props.modelValue
     },
     set(value: any) {
-        console.log(value)
         emit('update:modelValue', value)
     },
 })

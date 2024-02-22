@@ -190,7 +190,6 @@ onBeforeMount(() => {
           'md:w-[calc(100vw-16rem)] max-md:w-full': (size === 'xl' && isHorizental),
           '!shadow-xl drop-shadow-2xl': (activeScreen === 'default' && noBackdrop),
           'z-30': (modelValue && !isActive.value),
-          'max-md:z-[2200]': (modelValue && !isActive.value),
           'dark:md:border-bluegray-70/80': alwaysShow,
           'dark:md:border-r': position === 'left',
           'dark:md:border-l': position === 'right',

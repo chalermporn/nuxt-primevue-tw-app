@@ -18,8 +18,8 @@ const product = ref({
     description: '',
     status: '',
     category: '',
-    price: '',
-    quantity: '',
+    price: 0,
+    quantity: 0,
     rating: 0,
 })
 
@@ -33,7 +33,7 @@ const saveProduct = () => {
 
     ProductServiceClient.addProducts(product.value)
 
-    toast.add({ severity: 'success', summary: 'Success Message', detail: 'Message Content', life: 3000 });
+    toast.add({ severity: 'success', summary: 'Added successfully', detail: `you have added a new product`, life: 3000 });
     hide()
 }
 

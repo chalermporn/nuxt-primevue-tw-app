@@ -2,13 +2,17 @@
 import { useRoute, useRouter } from 'vue-router'
 import { ProductServiceClient } from '~/client_api/productServiceClient';
 import { ddl } from '~/server/mockdata/dropdown';
+import { useToast } from "primevue/usetoast";
+import { cloneDeep } from 'lodash'
 
+const toast = useToast();
 const route = useRoute()
 const router = useRouter()
 const routeId = computed(() => String(route.params.id))
 const submitted = ref(false)
 const statuses = ref(ddl.statuses);
 const category = ref(ddl.category);
+const closeEvent = ref('')
 
 const productDetail = ref({
     id: '',
@@ -19,7 +23,7 @@ const productDetail = ref({
     status: '',
     category: '',
     price: 0,
-    quantity: '',
+    quantity: 0,
     rating: 0,
 })
 
@@ -33,16 +37,26 @@ const modelValue = computed({
 })
 
 const updateProduct = () => {
-    router.replace(`/product/stock/${routeId.value}`)
+    closeEvent.value = 'update'
+    ProductServiceClient.updateProduct(productDetail.value)
+    toast.add({ severity: 'success', summary: 'Updated successfully', detail: `you have updated product id ${routeId.value}`, life: 3000 });
+    hide()
 }
 
 const hide = () => {
+    closeEvent.value = closeEvent.value || ''
     router.replace(`/product/stock/${routeId.value}`)
 }
 
+const emitCloseEvent = () => {
+    router.currentRoute.value.meta.closeEvent = closeEvent.value;
+};
+
+onBeforeRouteLeave(emitCloseEvent);
+
 const getProductDetailById = () => {
     ProductServiceClient.getProductDetailById(routeId.value).then((data) => {
-        productDetail.value = data[0]
+        productDetail.value = cloneDeep(data[0])
     });
 }
 
@@ -59,6 +73,7 @@ onMounted(() => {
 });
 </script>
 <template>
+    <Toast />
     <KTBDialog v-model="modelValue" header="Edit Products" class="p-fluid" @on-click-no="hide" @on-click-yes="updateProduct"
         modal-width="650px">
         <div class="flex flex-row gap-4 max-sm:flex-col">
@@ -80,4 +95,3 @@ onMounted(() => {
         </div>
     </KTBDialog>
 </template>
-<style scoped></style>

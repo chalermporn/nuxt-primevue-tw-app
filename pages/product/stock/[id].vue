@@ -16,6 +16,16 @@ const editProduct = () => {
     router.push(`${route.fullPath}/edit`)
 }
 
+const getProducts = inject('getProducts');
+
+onBeforeRouteUpdate((to, from) => {
+    if (from.meta.closeEvent === 'update') {
+        getProductDetailById()
+    }
+
+    if (typeof getProducts === 'function' && from.meta.closeEvent === 'update') getProducts();
+});
+
 const getProductDetailById = () => {
     isLoading.value = true
     ProductServiceClient.getProductDetailById(routeId.value).then((data) => {
@@ -97,8 +107,8 @@ onMounted(() => {
                 <div>Review:</div>
                 <Rating :modelValue="productDetail?.rating" :readonly="true" :cancel="false" />
             </div>
-            <NuxtPage page-key="child" />
         </div>
+        <NuxtPage page-key="child" />
     </PreviewLayout>
 </template>
 <style scoped></style>

@@ -22,25 +22,48 @@ const products = ref([{
   rating: 5
 },]);
 const deleteProductDialog = ref(false);
-const deleteProductsDialog = ref(false);
 const product = ref({});
 const selectedProducts = ref();
-const first = ref();
+const first = ref(0);
 const filters = ref({
   'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 const submitted = ref(false);
 const pageTitle = 'Stock';
-const breadcrumbs = [
+const menu = ref([
   {
-    text: 'Product',
-    to: '/product',
+    key: '0',
+    label: 'Product',
+    icon: 'pi pi-slack',
+    badge: 5,
+    items: [
+      {
+        key: '0_1',
+        label: 'Stocks',
+        url: '/product/stock',
+        icon: '',
+        badge: 0,
+      },
+    ],
   },
-  {
-    text: 'Stock',
-    to: '/product/stock',
-  },
-];
+]);
+
+const route = useRoute()
+const breadcrumbs = computed(() => {
+  const routeItems = route.fullPath.split('/').filter(Boolean);
+  const breadcrumbItems = [];
+
+  for (let i = 0; i < routeItems.length; i++) {
+    const to = i === routeItems.length - 1 ? '/' : `/${routeItems[i]}`;
+
+    breadcrumbItems.push({
+      text: routeItems[i].charAt(0).toUpperCase() + routeItems[i].slice(1),
+      to,
+    });
+  }
+  return breadcrumbItems;
+});
+
 const columns = ref(ddl.displayTableColumn);
 const selectedColumns = ref(columns.value);
 
@@ -117,6 +140,8 @@ const getProducts = () => {
   }, 1000)
 }
 
+provide('getProducts', getProducts);
+
 watch(() => products.value, (total) => {
   recordPerPage.value = total.length || 0;
 })
@@ -156,13 +181,16 @@ const confirmDeleteProduct = (prod) => {
 const deleteProduct = () => {
   deleteProductDialog.value = false;
   ProductServiceClient.deleteProducts(product.value.id)
-  toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+  toast.add({ severity: 'success', summary: 'Deleted successfully', detail: `you have updated product id ${product.value.id}`, life: 3000 });
   getProducts()
 };
 
 const deleteSelectedProducts = () => {
   ProductServiceClient.deleteSelectedProducts(selectedProducts.value)
-  toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+
+  for (let selectedProduct of selectedProducts.value) {
+    toast.add({ severity: 'success', summary: 'Deleted successfully', detail: `you have updated product id ${selectedProduct.id}`, life: 3000 });
+  }
   getProducts()
 };
 
@@ -342,7 +370,7 @@ onMounted(() => {
     <!-- # region dataview  -->
 
     <div
-      class="mt-4 max-xl:mx-auto max-xl:sticky max-xl:bottom-4 max-xl:w-[fit-content] max-xl:rounded-lg max-xl:shadow-2xl">
+      class="mt-4 max-xl:mx-auto max-xl:sticky max-xl:bottom-4 max-xl:w-[fit-content] max-xl:rounded-lg max-xl:shadow-sm max-xl:shadow-black dark:shadow-white">
       <KTBPaginator class="hidden xl:block" v-model:first="first" :rows="rowPerPage" :totalRecords="totalElement"
         template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
         :pt="{ root: 'flex flex-wrap justify-start items-center', start: 'order-first me-auto', end: 'order-last ms-auto' }"
@@ -359,7 +387,7 @@ onMounted(() => {
         :rows="rowPerPage" :totalRecords="totalElement"
         template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
         currentPageReportTemplate="Showing {first} of {totalRecords}"
-        :pt="{ firstPageButton: 'pr-2.5', previousPageButton: 'px-2.5 sm:px-4', nextPageButton: 'px-2.5 sm:px-4', lastPageButton: 'pl-2.5' }"
+        :pt="{ current: 'text-black dark:text-white/80', firstPageButton: 'pr-2.5', previousPageButton: 'px-2.5 sm:px-4', nextPageButton: 'px-2.5 sm:px-4', lastPageButton: 'pl-2.5' }"
         @onPageChange="onPageChange($event)">
         <template #end>
           <div class="ml-4">

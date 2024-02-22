@@ -35,9 +35,6 @@ const switchMode = (_mode) => {
         }
     }
 }
-const test = () => {
-    console.log('test')
-}
 
 onBeforeMount(() => {
     expandedKeys.value = activeMenu.value?.reduce((a, { key }) => ({ ...a, [key]: true }), {})
