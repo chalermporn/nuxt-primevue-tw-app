@@ -117,6 +117,8 @@ const getProducts = () => {
   }, 1000)
 }
 
+provide('getProducts', getProducts);
+
 watch(() => products.value, (total) => {
   recordPerPage.value = total.length || 0;
 })
@@ -156,13 +158,16 @@ const confirmDeleteProduct = (prod) => {
 const deleteProduct = () => {
   deleteProductDialog.value = false;
   ProductServiceClient.deleteProducts(product.value.id)
-  toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+  toast.add({ severity: 'success', summary: 'Deleted successfully', detail: `you have updated product id ${product.value.id}`, life: 3000 });
   getProducts()
 };
 
 const deleteSelectedProducts = () => {
   ProductServiceClient.deleteSelectedProducts(selectedProducts.value)
-  toast.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
+
+  for (let selectedProduct of selectedProducts.value) {
+    toast.add({ severity: 'success', summary: 'Deleted successfully', detail: `you have updated product id ${selectedProduct.id}`, life: 3000 });
+  }
   getProducts()
 };
 
@@ -359,7 +364,7 @@ onMounted(() => {
         :rows="rowPerPage" :totalRecords="totalElement"
         template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
         currentPageReportTemplate="Showing {first} of {totalRecords}"
-        :pt="{ firstPageButton: 'pr-2.5', previousPageButton: 'px-2.5 sm:px-4', nextPageButton: 'px-2.5 sm:px-4', lastPageButton: 'pl-2.5' }"
+        :pt="{ current: 'text-white/80', firstPageButton: 'pr-2.5', previousPageButton: 'px-2.5 sm:px-4', nextPageButton: 'px-2.5 sm:px-4', lastPageButton: 'pl-2.5' }"
         @onPageChange="onPageChange($event)">
         <template #end>
           <div class="ml-4">

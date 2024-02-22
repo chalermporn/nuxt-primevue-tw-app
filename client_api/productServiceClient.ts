@@ -450,5 +450,23 @@ export const ProductServiceClient = {
 
     deleteSelectedProducts(selectedProducts: any){
         products.value = products.value.filter(val => !selectedProducts.includes(val));
-    }
+    },
+
+    updateProduct (product: any) {
+        if (!product.id) return;
+      
+        const index = products.value.findIndex((val) => val.id === product.id);
+        if (index !== -1) {
+          products.value[index] = {
+            ...products.value[index],
+            name: product.name,
+            description: product.description,
+            price: product.price,
+            category: product.category,
+            quantity: product.quantity,
+            status: product.status,
+            rating: product.rating,
+          };
+        }
+    },
 };
