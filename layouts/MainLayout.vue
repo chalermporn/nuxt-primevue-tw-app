@@ -10,7 +10,7 @@ const items = ref([
         key: '0_1',
         label: 'Stocks',
         url: '/product/stock',
-        icon: '',
+        icon: 'pi pi-box',
         badge: 0,
       },
     ],
@@ -18,6 +18,12 @@ const items = ref([
 ]);
 
 const isShowSidebar = ref(false)
+const route = useRoute()
+const href = computed(() => route.href)
+
+watch(href, () => {
+  isShowSidebar.value = false;
+})
 </script>
 
 <template>

@@ -22,7 +22,7 @@ const colorMode = inject('colorMode')
 const expandedKeys = ref({});
 const isShowSidebar = computed(() => props.isShowSidebar)
 const isCollapsed = ref(false);
-const activeMenu = computed(() => [...helpers.flatMap(props.menuItems, 'items', 'url', route.path)])
+const activeMenu = computed(() => [...helpers.flatMap(props.menuItems, 'items', 'url', route.path, true)])
 
 const switchMode = (_mode) => {
     if (_mode) {
@@ -63,7 +63,7 @@ onBeforeMount(() => {
                             :class="['pi pi-chevron-left transform duration-200 ease-in', { 'rotate-180 mt-2': isCollapsed }]"
                             @click=" isCollapsed = !isCollapsed" />
                     </div>
-                    <div class="overflow-auto scrollbar-hide my-4 md:h-[calc(100% - 68px)] w-">
+                    <div class="overflow-auto scrollbar-hide my-4 md:h-[calc(100% - 68px)]">
                         <PanelMenu v-model:expandedKeys="expandedKeys" :model="menuItems" multiple :pt="{
                             root: ['flex flex-col gap-3'],
                             header: ({ context }) => {
@@ -77,17 +77,17 @@ onBeforeMount(() => {
                                             'bg-white dark:bg-black',
                                             { 'bg-gray-700': context?.focused },
                                             'peer-hover:rounded-r-lg peer-hover:ps-1 peer-hover:pe-4 peer-hover:pt-2 peer-hover:pb-2 peer-hover:!block peer-hover:absolute peer-hover:left-16 peer-hover:-mt-12 peer-hover:bg-gray-0 peer-hover:dark:bg-bluegray-80 peer-hover:shadow-md',
-                                            { '!duration-0 !animation-none hover:!block hover:rounded-r-lg hover:absolute hover:left-16 hover:-mt-12 hover:p-1 hover:pe-4 hover:pt-3 hover:pb-4 hover:bg-gray-0 hover:dark:bg-bluegray-80 hover:shadow-md hover:z-10': true },
+                                            { '!duration-0 !animation-none hover:!block hover:rounded-r-lg hover:absolute hover:left-16 hover:-mt-12 hover:p-1 hover:pe-4 hover:pt-2 hover:pb-2 hover:bg-gray-0 hover:dark:bg-bluegray-80 hover:shadow-md hover:z-10': true },
                                         ],
                                     } : {})
                                 }
                             },
                             menucontent: 'border-none',
-                            headercontent: ({ context }) => {
-                                return { class: ['text-gray-400 rounded-md', { 'text-gray-700 dark:text-white dark:bg-gray-700': context.active }] };
+                            headercontent: () => {
+                                return { class: ['text-gray-700 rounded-md dark:text-white'] };
                             },
                             content: ({ context }) => {
-                                return { class: ['p-menuitem-content text-gray-400 rounded-md', { 'text-gray-700 dark:text-white dark:bg-gray-700': context.active }] }
+                                return { class: ['p-menuitem-content text-gray-400 rounded-md', { 'text-gray-700 dark:text-white': (context.item.item.url && activeMenu?.findLast(e => e.url === context.item.item.url)) }] }
                             },
                         }">
                             <template #item="{ item, root }">
