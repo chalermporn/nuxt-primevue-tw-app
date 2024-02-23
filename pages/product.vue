@@ -1,13 +1,12 @@
 <script setup>
 import { FilterMatchMode } from 'primevue/api';
-import { useToast } from 'primevue/usetoast';
 import { useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue';
 import { ProductServiceClient } from '~/client_api/productServiceClient';
 import { ddl } from '~/server/mockdata/dropdown';
 
-const toast = useToast();
 const router = useRouter()
+const { showSuccessToast } = useCustomToast()
 const dt = ref();
 const products = ref([{
   id: '',
@@ -181,7 +180,7 @@ const confirmDeleteProduct = (prod) => {
 const deleteProduct = () => {
   deleteProductDialog.value = false;
   ProductServiceClient.deleteProducts(product.value.id)
-  toast.add({ severity: 'success', summary: 'Deleted successfully', detail: `you have updated product id ${product.value.id}`, life: 3000 });
+  showSuccessToast('Deleted successfully', `you have updated product id ${product.value.id}`)
   getProducts()
 };
 
@@ -189,7 +188,7 @@ const deleteSelectedProducts = () => {
   ProductServiceClient.deleteSelectedProducts(selectedProducts.value)
 
   for (let selectedProduct of selectedProducts.value) {
-    toast.add({ severity: 'success', summary: 'Deleted successfully', detail: `you have updated product id ${selectedProduct.id}`, life: 3000 });
+    showSuccessToast('Deleted successfully', `you have updated product id ${selectedProduct.id}`)
   }
   getProducts()
 };
@@ -209,7 +208,7 @@ onMounted(() => {
 <template>
   <PageLayout :page-title="pageTitle" :breadcrumbs="breadcrumbs">
     <NuxtPage page-key="child" />
-    <Toast />
+    <KTBToast />
     <!-- # region datalist table -->
     <section>
       <div class="relative flex gap-4 justify-between">

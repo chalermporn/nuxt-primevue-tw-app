@@ -2,12 +2,11 @@
 import { useRoute, useRouter } from 'vue-router'
 import { ProductServiceClient } from '~/client_api/productServiceClient';
 import { ddl } from '~/server/mockdata/dropdown';
-import { useToast } from "primevue/usetoast";
 import { cloneDeep } from 'lodash'
 
-const toast = useToast();
 const route = useRoute()
 const router = useRouter()
+const { showSuccessToast } = useCustomToast()
 const routeId = computed(() => String(route.params.id))
 const submitted = ref(false)
 const statuses = ref(ddl.statuses);
@@ -39,7 +38,7 @@ const modelValue = computed({
 const updateProduct = () => {
     closeEvent.value = 'update'
     ProductServiceClient.updateProduct(productDetail.value)
-    toast.add({ severity: 'success', summary: 'Updated successfully', detail: `you have updated product id ${routeId.value}`, life: 3000 });
+    showSuccessToast('Updated successfully', `you have updated product id ${routeId.value}`)
     hide()
 }
 
@@ -73,7 +72,7 @@ onMounted(() => {
 });
 </script>
 <template>
-    <Toast />
+    <KTBToast />
     <KTBDialog v-model="modelValue" header="Edit Products" class="p-fluid" @on-click-no="hide" @on-click-yes="updateProduct"
         modal-width="650px">
         <div class="flex flex-row gap-4 max-sm:flex-col">
