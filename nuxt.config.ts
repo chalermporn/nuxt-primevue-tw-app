@@ -11,7 +11,7 @@ export default defineNuxtConfig({
   ],
   components: {
     global: true,
-    dirs: ['~/components', '~/layouts']
+    dirs: ['~/components', '~/layouts', '~/composables']
   },
   primevue: {
     options: {
@@ -25,7 +25,6 @@ export default defineNuxtConfig({
   css: [
     'primeicons/primeicons.css', 
     '~/assets/css/main.css',
-
   ],
   tailwindcss: {
     config: {

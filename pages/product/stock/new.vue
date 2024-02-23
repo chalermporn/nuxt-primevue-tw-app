@@ -2,11 +2,10 @@
 import { useRoute, useRouter } from 'vue-router'
 import { ProductServiceClient } from '~/client_api/productServiceClient';
 import { ddl } from '~/server/mockdata/dropdown';
-import { useToast } from "primevue/usetoast";
 
-const toast = useToast();
 const route = useRoute()
 const router = useRouter()
+const { showSuccessToast } = useCustomToast()
 const submitted = ref(false)
 const statuses = ref(ddl.statuses);
 const category = ref(ddl.category);
@@ -33,7 +32,7 @@ const saveProduct = () => {
 
     ProductServiceClient.addProducts(product.value)
 
-    toast.add({ severity: 'success', summary: 'Added successfully', detail: `you have added a new product`, life: 3000 });
+    showSuccessToast('Added successfully', 'you have added a new product')
     hide()
 }
 
@@ -73,6 +72,6 @@ const modelValue = computed({
         <KTBInputNumber v-model="product.price" label="Price" :decimal="2" />
         <KTBInputNumber v-model="product.quantity" label="Quantity" />
     </KTBDialog>
-    <Toast />
+    <KTBToast />
 </template>
 <style scoped></style>

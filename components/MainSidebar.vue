@@ -66,10 +66,10 @@ onBeforeMount(() => {
                     <div class="overflow-auto scrollbar-hide my-4 md:h-[calc(100% - 68px)]">
                         <PanelMenu v-model:expandedKeys="expandedKeys" :model="menuItems" multiple :pt="{
                             root: ['flex flex-col gap-3'],
-                            header: ({ context }) => {
-                                return { class: { 'peer': context?.index === 0 } }
+                            header: ({ props }) => {
+                                return { class: { 'peer': props?.tabindex === 0 } }
                             },
-                            toggleablecontent: ({ context }) => {
+                            toggleablecontent: ({ props }) => {
                                 return {
                                     ...(isCollapsed ? {
                                         class: [
@@ -77,7 +77,7 @@ onBeforeMount(() => {
                                             'bg-white dark:bg-black',
                                             { 'bg-gray-700': context?.focused },
                                             'peer-hover:rounded-r-lg peer-hover:ps-1 peer-hover:pe-4 peer-hover:pt-2 peer-hover:pb-2 peer-hover:!block peer-hover:absolute peer-hover:left-16 peer-hover:-mt-12 peer-hover:bg-gray-0 peer-hover:dark:bg-bluegray-80 peer-hover:shadow-md',
-                                            { '!duration-0 !animation-none hover:!block hover:rounded-r-lg hover:absolute hover:left-16 hover:-mt-12 hover:p-1 hover:pe-4 hover:pt-2 hover:pb-2 hover:bg-gray-0 hover:dark:bg-bluegray-80 hover:shadow-md hover:z-10': true },
+                                            { '!duration-0 !animation-none hover:!block hover:rounded-r-lg hover:absolute hover:left-16 hover:-mt-12 hover:p-1 hover:pe-4 hover:pt-2 hover:pb-2 hover:bg-gray-0 hover:dark:bg-bluegray-80 hover:shadow-md hover:z-10': props.tabindex === 0 },
                                         ],
                                     } : {})
                                 }
