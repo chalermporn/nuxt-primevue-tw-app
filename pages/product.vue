@@ -347,7 +347,8 @@ onMounted(() => {
                           <i class="pi pi-tag"></i>
                           <span class="font-semibold">{{ item.category }}</span>
                         </span>
-                        <Tag v-show="isDisplay('status')" :value="item.status"></Tag>
+                        <Tag v-show="isDisplay('status')" :value="item.status"
+                          :severity="getStatusLabel(item.status) || undefined"></Tag>
                       </div>
                     </div>
                     <div
