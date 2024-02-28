@@ -2,7 +2,7 @@
 import { useRoute, useRouter } from 'vue-router'
 import { ProductServiceClient } from '~/client_api/productServiceClient';
 import { ddl } from '~/server/mockdata/dropdown';
-import { cloneDeep } from 'lodash'
+import lodash from 'lodash'
 
 const route = useRoute()
 const router = useRouter()
@@ -55,7 +55,7 @@ onBeforeRouteLeave(emitCloseEvent);
 
 const getProductDetailById = () => {
     ProductServiceClient.getProductDetailById(routeId.value).then((data) => {
-        productDetail.value = cloneDeep(data[0])
+        productDetail.value = lodash.cloneDeep(data[0])
     });
 }
 
