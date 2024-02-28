@@ -213,15 +213,12 @@ onMounted(() => {
     <!-- # region datalist table -->
     <div class="w-full relative flex gap-4 justify-between">
       <div class="flex gap-4 max-w-[215px]">
-        <div class="w-full max-w-[215px]">
-          <KTBButton label="New" icon="pi pi-plus" type="contained" bg-color="bg-green-700" text-color="text-white"
-            @click="openNew" />
-        </div>
-        <div class="w-full max-w-[215px]">
-          <KTBButton class="hidden xl:block" label="Delete" icon="pi pi-trash" type="contained" bg-color="bg-red-700"
-            text-color="text-white dark:text-white" :disabled="!selectedProducts || !selectedProducts.length"
-            @click="deleteSelectedProducts" />
-        </div>
+        <KTBButton label="New" icon="pi pi-plus" type="contained" bg-color="bg-green-700" text-color="text-white"
+          @click="openNew" />
+
+        <KTBButton class="hidden xl:block" label="Delete" icon="pi pi-trash" type="contained" bg-color="bg-red-700"
+          text-color="text-white dark:text-white" :disabled="!selectedProducts || !selectedProducts.length"
+          @click="deleteSelectedProducts" />
       </div>
       <div class="flex gap-2 max-w-[260px]">
         <KTBInputText v-model="filtersSearchBox" class="min-w-36" name="searchBox" placeholder="Search..."
@@ -237,7 +234,7 @@ onMounted(() => {
         {{ filterCount }}</div>
     </div>
     <!-- # region datalist table -->
-    <div>
+    <ClientOnly>
       <DataTable ref="dt" class="max-xl:hidden" :value="products" v-model:selection="selectedProducts" resizableColumns
         columnResizeMode="fit" :sort-field="(filterOrderCol)?.toLowerCase()" :sort-order="sortOrder" showGridlines
         dataKey="id" :paginator="false" :rows="rowPerPage" :filters="filters"
@@ -283,7 +280,7 @@ onMounted(() => {
           </template>
         </Column>
       </DataTable>
-    </div>
+    </ClientOnly>
     <!-- # end region datalist table -->
 
     <KTBDialog v-model="deleteProductDialog" @on-click-no="deleteProductDialog = false" @on-click-yes="deleteProduct">
