@@ -5,6 +5,7 @@ import { ref, onMounted } from 'vue';
 import { ProductServiceClient } from '~/client_api/productServiceClient';
 import { ddl } from '~/server/mockdata/dropdown';
 
+const { isMaxXl } = inject('screen')
 const router = useRouter()
 const { showSuccessToast } = useCustomToast()
 const dt = ref();
@@ -368,35 +369,20 @@ onMounted(() => {
       </DataView>
     </div>
     <!-- # region dataview  -->
-
-    <div
-      class="mt-4 max-xl:mx-auto max-xl:sticky max-xl:bottom-4 max-xl:w-[fit-content] max-xl:rounded-lg max-xl:shadow-sm max-xl:shadow-black dark:shadow-white">
-      <KTBPaginator class="hidden xl:block" v-model:first="first" :rows="rowPerPage" :totalRecords="totalElement"
-        template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-        :pt="{ root: 'flex flex-wrap justify-start items-center', start: 'order-first me-auto', end: 'order-last ms-auto' }"
-        @onPageChange="onPageChange($event)">
-        <template #start>
-          Total {{ totalElement }} products ({{ recordPerPage }} per page)
-        </template>
-        <template #end>
-          <KTBDropdown v-model="rowPerPage" :item-list="ddlRowPerPage" @update:model-value="onRowPerPageChanged" />
-        </template>
-      </KTBPaginator>
-
-      <KTBPaginator class="flex xl:hidden mx-auto bg-white rounded-lg dark:bg-black" v-model:first="first"
-        :rows="rowPerPage" :totalRecords="totalElement"
-        template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
-        currentPageReportTemplate="Showing {first} of {totalRecords}"
-        :pt="{ current: 'text-black dark:text-white/80', firstPageButton: 'pr-2.5', previousPageButton: 'px-2.5 sm:px-4', nextPageButton: 'px-2.5 sm:px-4', lastPageButton: 'pl-2.5' }"
-        @onPageChange="onPageChange($event)">
-        <template #end>
-          <div class="ml-4">
-            <KTBDropdown class="mx-auto" v-model="rowPerPage" :item-list="ddlRowPerPage"
-              @update:model-value="onRowPerPageChanged" />
-          </div>
-        </template>
-      </KTBPaginator>
-    </div>
+    <KTBPaginator
+      class="max-xl:sticky max-xl:bottom-4 max-xl:rounded-lg max-xl:shadow-sm max-xl:shadow-black max-xl:bg-white max-xl:w-[fit-content] max-xl:mx-auto "
+      v-model:first="first" :rows="rowPerPage" :totalRecords="totalElement"
+      :template="isMaxXl ? 'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink' : 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink'"
+      :currentPageReportTemplate="isMaxXl ? 'Showing {first} of {totalRecords}' : ''"
+      :pt="isMaxXl ? { current: 'text-black dark:text-white/80', firstPageButton: 'px-2', previousPageButton: 'px-2.5 sm:px-2', nextPageButton: 'px-2.5 sm:px-2', lastPageButton: 'px-2' } : { root: 'flex flex-wrap justify-start items-center', start: 'order-first me-auto', end: 'order-last ms-auto' }"
+      @onPageChange="onPageChange($event)">
+      <template v-if="!isMaxXl" #start>
+        Total {{ totalElement }} products ({{ recordPerPage }} per page)
+      </template>
+      <template #end>
+        <KTBDropdown v-model="rowPerPage" :item-list="ddlRowPerPage" @update:model-value="onRowPerPageChanged" />
+      </template>
+    </KTBPaginator>
 
     <Offcanvas v-model="showFilter" tagName="aside" position="right" size="medium" class="bg-white dark:bg-black"
       noBackdrop @close="showFilter = false">
