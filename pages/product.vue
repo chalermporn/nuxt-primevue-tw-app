@@ -211,78 +211,75 @@ onMounted(() => {
     <NuxtPage page-key="child" />
     <KTBToast />
     <!-- # region datalist table -->
-    <section>
-      <div class="relative flex gap-4 justify-between">
-        <div class="flex gap-4">
-          <KTBButton label="New" icon="pi pi-plus" type="contained" bg-color="bg-green-700" text-color="text-white"
-            @click="openNew" />
-          <KTBButton class="hidden xl:block" label="Delete" icon="pi pi-trash" type="contained" bg-color="bg-red-700"
-            text-color="text-white dark:text-white" :disabled="!selectedProducts || !selectedProducts.length"
-            @click="deleteSelectedProducts" />
-        </div>
-        <div class="flex gap-2">
-          <KTBInputText v-model="filtersSearchBox" name="searchBox" placeholder="Search..." @keyup.enter="onSearch" />
-
-          <div class="min-w-12 w-12">
-            <KTBButton icon="pi pi-filter" type="contained" bg-color="bg-gray-200"
-              text-color="text-gray-700 dark:text-black" @click="showFilter = true" />
-          </div>
-        </div>
-        <div v-show="filterCount"
-          class="absolute top-0 right-1 w-5 h-5 flex justify-center items-center bg-green-700 text-sm text-white rounded-full p-1">
-          {{ filterCount }}</div>
+    <div class="w-full relative flex gap-4 justify-between">
+      <div class="flex gap-4 max-w-[215px]">
+        <KTBButton label="New" icon="pi pi-plus" type="contained" bg-color="bg-green-700" text-color="text-white"
+          @click="openNew" />
+        <KTBButton class="hidden xl:block" label="Delete" icon="pi pi-trash" type="contained" bg-color="bg-red-700"
+          text-color="text-white dark:text-white" :disabled="!selectedProducts || !selectedProducts.length"
+          @click="deleteSelectedProducts" />
       </div>
-    </section>
+      <div class="flex gap-2 max-w-[260px]">
+        <KTBInputText v-model="filtersSearchBox" class="min-w-36" name="searchBox" placeholder="Search..."
+          @keyup.enter="onSearch" />
+
+        <div class="min-w-12 w-12">
+          <KTBButton icon="pi pi-filter" type="contained" bg-color="bg-gray-200"
+            text-color="text-gray-700 dark:text-black" @click="showFilter = true" />
+        </div>
+      </div>
+      <div v-show="filterCount"
+        class="absolute top-0 right-1 w-5 h-5 flex justify-center items-center bg-green-700 text-sm text-white rounded-full p-1">
+        {{ filterCount }}</div>
+    </div>
     <!-- # region datalist table -->
-    <section class="hidden xl:flex flex-col gap-4">
-      <div>
-        <DataTable ref="dt" :value="products" v-model:selection="selectedProducts" resizableColumns columnResizeMode="fit"
-          :sort-field="(filterOrderCol)?.toLowerCase()" :sort-order="sortOrder" showGridlines dataKey="id"
-          :paginator="false" :rows="rowPerPage" :filters="filters"
-          :pt="{ thead: 'bg-green-700 text-white', bodyrow: 'cursor-pointer' }"
-          :ptOptions="{ mergeSections: true, mergeProps: true }" @row-click="viewDetail($event.data.id)" @sort="onSort">
-          <template #header>
-            <div style="text-align:left">
-              <KTBMultiSelect v-model="selectedColumns" :options="columns" optionLabel="header" />
+    <div>
+      <DataTable ref="dt" class="max-xl:hidden" :value="products" v-model:selection="selectedProducts" resizableColumns
+        columnResizeMode="fit" :sort-field="(filterOrderCol)?.toLowerCase()" :sort-order="sortOrder" showGridlines
+        dataKey="id" :paginator="false" :rows="rowPerPage" :filters="filters"
+        :pt="{ thead: 'bg-green-700 text-white', bodyrow: 'cursor-pointer' }"
+        :ptOptions="{ mergeSections: true, mergeProps: true }" @row-click="viewDetail($event.data.id)" @sort="onSort">
+        <template #header>
+          <div style="text-align:left">
+            <KTBMultiSelect v-model="selectedColumns" :options="columns" optionLabel="header" />
+          </div>
+        </template>
+
+        <template #empty>
+          <div class="my-5 text-center">No products found.</div>
+        </template>
+
+        <Column selectionMode="multiple" style="width: 3rem" :exportable="false" />
+
+        <Column v-for="(col, index) of  selectedColumns " :field="col.field" :header="col.header"
+          :sortable="col.field !== 'image'" :key="col.field + '_' + index" :style="{ minWidth: `${col.minWidth}` }">
+          <template #body="slotProps">
+            <template v-if="isTableDataLoading">
+              <KTBLoadingSkeleton />
+            </template>
+            <template v-else>
+              <img v-if="col.field === 'image'" class="max-w-20 rounded"
+                :src="`https://primefaces.org/cdn/primevue/images/product/${slotProps.data.image}`" />
+              <div v-else-if="col.field === 'price'">{{ formatCurrency(slotProps.data.price) }}</div>
+              <Rating v-else-if="col.field === 'rating'" :modelValue="slotProps.data.rating" :readonly="true"
+                :cancel="false" />
+              <Tag v-else-if="col.field === 'status'" :modelValue="slotProps.data.status" :value="slotProps.data.status"
+                :severity="getStatusLabel(slotProps.data.status)" />
+              <div v-else>{{ slotProps.data[col.field] }}</div>
+            </template>
+          </template>
+        </Column>
+
+        <Column :exportable="false">
+          <template #body="slotProps">
+            <div class="min-w-12 w-12 flex gap-2">
+              <KTBButton icon="pi pi-trash" type="outlined" border-color="border-red-700"
+                text-color="text-red-700 dark:text-white" @click.stop="confirmDeleteProduct(slotProps.data)" />
             </div>
           </template>
-
-          <template #empty>
-            <div class="my-5 text-center">No products found.</div>
-          </template>
-
-          <Column selectionMode="multiple" style="width: 3rem" :exportable="false" />
-
-          <Column v-for="(col, index) of  selectedColumns " :field="col.field" :header="col.header"
-            :sortable="col.field !== 'image'" :key="col.field + '_' + index" :style="{ minWidth: `${col.minWidth}` }">
-            <template #body="slotProps">
-              <template v-if="isTableDataLoading">
-                <KTBLoadingSkeleton />
-              </template>
-              <template v-else>
-                <img v-if="col.field === 'image'" class="max-w-20 rounded"
-                  :src="`https://primefaces.org/cdn/primevue/images/product/${slotProps.data.image}`" />
-                <div v-else-if="col.field === 'price'">{{ formatCurrency(slotProps.data.price) }}</div>
-                <Rating v-else-if="col.field === 'rating'" :modelValue="slotProps.data.rating" :readonly="true"
-                  :cancel="false" />
-                <Tag v-else-if="col.field === 'status'" :modelValue="slotProps.data.status" :value="slotProps.data.status"
-                  :severity="getStatusLabel(slotProps.data.status)" />
-                <div v-else>{{ slotProps.data[col.field] }}</div>
-              </template>
-            </template>
-          </Column>
-
-          <Column :exportable="false">
-            <template #body="slotProps">
-              <div class="min-w-12 w-12 flex gap-2">
-                <KTBButton icon="pi pi-trash" type="outlined" border-color="border-red-700"
-                  text-color="text-red-700 dark:text-white" @click.stop="confirmDeleteProduct(slotProps.data)" />
-              </div>
-            </template>
-          </Column>
-        </DataTable>
-      </div>
-    </section>
+        </Column>
+      </DataTable>
+    </div>
     <!-- # end region datalist table -->
 
     <KTBDialog v-model="deleteProductDialog" @on-click-no="deleteProductDialog = false" @on-click-yes="deleteProduct">
