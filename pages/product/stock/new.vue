@@ -2,6 +2,9 @@
 import { useRoute, useRouter } from 'vue-router'
 import { ProductServiceClient } from '~/client_api/productServiceClient';
 import { ddl } from '~/server/mockdata/dropdown';
+import { useVuelidate } from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
+import { helpers } from '@vuelidate/validators'
 
 const route = useRoute()
 const router = useRouter()
@@ -22,8 +25,20 @@ const product = ref({
     rating: 0,
 })
 
+const rules = computed(() => ({
+    name: { required: helpers.withMessage('Product name is required', required) },
+    description: { required: helpers.withMessage('Description is required', required) },
+    status: { required: helpers.withMessage('Status is required', required) },
+    category: { required: helpers.withMessage('Category is required', required) },
+    price: { required: helpers.withMessage('Price is required', required) },
+    quantity: { required: helpers.withMessage('Quantity is required', required) },
+}))
+
+const v$ = useVuelidate(rules.value, product.value)
+
 const saveProduct = () => {
     submitted.value = true;
+    if (v$.value.$invalid) return false
 
     product.value.id = createId();
     product.value.code = createId();
@@ -63,14 +78,18 @@ const modelValue = computed({
         <img v-if="product.image" :src="`https://primefaces.org/cdn/primevue/images/product/${product.image}`"
             :alt="product.image" class="block m-auto pb-3" />
 
-        <KTBInputText v-model.trim="product.name" label="Product name" name="productName" />
-        <KTBInputTextarea v-model="product.description" label="Description" />
+        <KTBInputText v-model.trim="product.name" label="Product name" name="productName" required :is-submit="submitted"
+            :validate="v$.name" />
+        <KTBInputTextarea v-model="product.description" label="Description" required :is-submit="submitted"
+            :validate="v$.description" />
         <KTBDropdown v-model="product.status" label="Status" :item-list="statuses" placeholder="Please select a status"
-            searchable required :is-submit="submitted" />
+            searchable required :is-submit="submitted" :validate="v$.status" />
         <KTBDropdown v-model="product.category" label="Category" :item-list="category" placeholder="Please select a status"
-            searchable required :is-submit="submitted" />
-        <KTBInputNumber v-model="product.price" label="Price" :decimal="2" />
-        <KTBInputNumber v-model="product.quantity" label="Quantity" />
+            searchable required :is-submit="submitted" :validate="v$.category" />
+        <KTBInputNumber v-model="product.price" label="Price" :decimal="2" required :is-submit="submitted"
+            :validate="v$.price" />
+        <KTBInputNumber v-model="product.quantity" label="Quantity" required :is-submit="submitted"
+            :validate="v$.quantity" />
     </KTBDialog>
     <KTBToast />
 </template>

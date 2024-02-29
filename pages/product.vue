@@ -397,9 +397,9 @@ onMounted(() => {
             placeholder="Please select a filter column" :is-submit="submitted" />
 
           <div class="mt-3 flex gap-1">
-            <KTBButton label="Ascending" icon="pi pi-sort-amount-down" type="contained" bg-color="bg-gray-200"
+            <KTBButton label="Ascending" icon="pi pi-sort-amount-up-alt" type="contained" bg-color="bg-gray-200"
               text-color="text-gray-700 dark:text-black" @click="onFilterShowByChange('asc')" />
-            <KTBButton label="Descending" icon="pi pi-sort-amount-up-alt" type="outlined" border-color="border-gray-700"
+            <KTBButton label="Descending" icon="pi pi-sort-amount-down" type="outlined" border-color="border-gray-700"
               text-color="text-gray-700 dark:text-white dark:border-gray-400" @click="onFilterShowByChange('dsc')" />
           </div>
         </div>

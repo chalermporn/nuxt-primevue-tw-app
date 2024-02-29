@@ -30,6 +30,11 @@ const props = defineProps({
         required: false,
         default: false,
     },
+    validate: {
+        type: Object,
+        required: false,
+        default: false,
+    },
     decimal: {
         type: Number,
         required: false,
@@ -50,15 +55,17 @@ const modelValue = computed({
         emit('update:modelValue', value)
     },
 })
+const invalid = computed(() => (props.validate.$invalid && props.isSubmit))
 </script>
 <template>
     <div>
-        <label>{{ label }}</label>
+        <label>{{ label }}<span v-show="required" class="ml-1 text-red-500">*</span></label>
         <InputNumber class="w-full text-black" v-model="modelValue" :maxFractionDigits="decimal"
             @input="(e) => (modelValue = e.value)"
-            :pt="{ input: { root: 'bg-white text-dark w-full dark:bg-transparent dark:text-white' } }"
+            :pt="{ input: { root: [invalid ? 'border border-red-500' : '', 'bg-white text-dark w-full dark:bg-transparent dark:text-white'] } }"
             :ptOptions="{ mergeSections: true, mergeProps: true }" />
-        <small class="p-error text-red-500" v-if="isSubmit && required && !modelValue">{{ label }} is required.</small>
+        <small class="p-error text-red-500" v-if="invalid">{{ validate.required.$message
+        }}</small>
     </div>
 </template>
 <style scoped></style>

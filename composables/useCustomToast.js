@@ -3,7 +3,7 @@ export function useCustomToast() {
     const $toast = useToast();
   
     function showSuccessToast(title, message) {
-      $toast.add({ severity: 'success', summary: title || 'Success', detail: message })
+      $toast.add({ severity: 'success', summary: title || 'Success', detail: message, life: 3000 })
     }
   
     function showErrorToast(title, message) {
