@@ -30,12 +30,17 @@ const props = defineProps({
         required: false,
         default: false,
     },
-    searchable: {
+    required: {
         type: Boolean,
         required: false,
         default: false,
     },
-    required: {
+    validate: {
+        type: Object,
+        required: false,
+        default: false,
+    },
+    searchable: {
         type: Boolean,
         required: false,
         default: false,
@@ -69,18 +74,24 @@ const modelValue = computed({
         emit('update:modelValue', e.value)
     },
 })
+
+const invalid = computed(() => (props.validate.$invalid && props.isSubmit))
 </script>
 <template>
-    <label>{{ label }}<span v-show="required" class="ml-1 text-red-500">*</span></label>
-    <Dropdown class="!w-full" v-model="modelValue" :options="itemList" :optionLabel="optionLabel" :pt="{
-        list: 'mt-1 text-black bg-white dark:bg-gray-700', item: ({ context }) => { }
-    }" :placeholder="placeholder">
-        <template #value="slotProps">
-            <div v-if="slotProps.value && slotProps.value.value">{{ slotProps.value.label }}</div>
-            <div v-else-if="slotProps.value && !slotProps.value.value">{{ selectedLabel }} </div>
-            <span v-else>{{ slotProps.placeholder }}</span>
-        </template>
-    </Dropdown>
-    <small class="p-error text-red-500" v-if="required && isSubmit && !modelValue">{{ label }} is required.</small>
+    <div>
+        <label>{{ label }}<span v-show="required" class="ml-1 text-red-500">*</span></label>
+        <Dropdown class="!w-full" v-model="modelValue" :options="itemList" :optionLabel="optionLabel" :pt="{
+            list: 'mt-1 text-black bg-white dark:bg-gray-700',
+            root: invalid ? 'border border-red-500' : ''
+        }" :ptOptions="{ mergeSections: true, mergeProps: true }" :placeholder="placeholder">
+            <template #value="slotProps">
+                <div v-if="slotProps.value && slotProps.value.value">{{ slotProps.value.label }}</div>
+                <div v-else-if="slotProps.value && !slotProps.value.value">{{ selectedLabel }} </div>
+                <span v-else>{{ slotProps.placeholder }}</span>
+            </template>
+        </Dropdown>
+        <small class="p-error text-red-500" v-if="invalid">{{ validate.required.$message
+        }}</small>
+    </div>
 </template>
 <style scoped></style>
