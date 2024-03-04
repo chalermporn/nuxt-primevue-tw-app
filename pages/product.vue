@@ -30,23 +30,6 @@ const filters = ref({
 });
 const submitted = ref(false);
 const pageTitle = 'Stock';
-const menu = ref([
-  {
-    key: '0',
-    label: 'Product',
-    icon: 'pi pi-slack',
-    badge: 5,
-    items: [
-      {
-        key: '0_1',
-        label: 'Stocks',
-        url: '/product/stock',
-        icon: '',
-        badge: 0,
-      },
-    ],
-  },
-]);
 
 const route = useRoute()
 const breadcrumbs = computed(() => {
@@ -135,6 +118,7 @@ const getProducts = () => {
     ProductServiceClient.getProductsByPaging(page.value, rowPerPage.value, filterOrder.value, filterOrderCol.value, filterType.value, filterByCategory.value, filtersSearchBox.value).then((data) => {
       products.value = data.products;
       totalElement.value = data.totalElement;
+      first.value = data.startIndex
       isTableDataLoading.value = false
     });
   }, 1000)

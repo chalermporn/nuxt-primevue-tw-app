@@ -382,7 +382,7 @@ export const ProductServiceClient = {
 
         const productsToReturn = sortedProducts.slice(startIndex, endIndex);
       
-        return Promise.resolve({ products: productsToReturn, totalElement: sortedProducts.length});
+        return Promise.resolve({ products: productsToReturn, totalElement: sortedProducts.length, startIndex: startIndex});
     },
       
     sortProuctByOrderAndField(order: string, field: string, products: any[]) {
