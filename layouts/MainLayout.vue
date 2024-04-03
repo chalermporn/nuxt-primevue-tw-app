@@ -13,6 +13,13 @@ const items = ref([
         icon: 'pi pi-box',
         badge: 0,
       },
+      {
+        key: '0_1',
+        label: 'Service',
+        url: '/product/service',
+        icon: 'pi pi-cog',
+        badge: 0,
+      },
     ],
   },
 ]);
