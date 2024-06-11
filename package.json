@@ -15,8 +15,8 @@
     "@iconify-json/uil": "^1.1.8",
     "@nuxtjs/color-mode": "^3.3.2",
     "@nuxtjs/tailwindcss": "latest",
-    "nuxt": "^3.9.1",
-    "nuxt-primevue": "^0.3.0",
+    "nuxt": "^3.11.2",
+    "nuxt-primevue": "^3.0.0",
     "vue": "^3.4.13",
     "vue-router": "^4.2.5"
   },
