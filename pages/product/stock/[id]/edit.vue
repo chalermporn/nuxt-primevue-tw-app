@@ -1,5 +1,5 @@
 <script setup>
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import { ProductServiceClient } from '~/client_api/productServiceClient';
 import { ddl } from '~/server/mockdata/dropdown';
 import lodash from 'lodash'

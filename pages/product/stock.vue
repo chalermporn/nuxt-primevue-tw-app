@@ -88,6 +88,11 @@ const onSort = (e) => {
     filterOrderCol.value = e.sortField.charAt(0).toUpperCase() + e.sortField.slice(1);
 }
 
+const onChangeFilterOrderCol = () => {
+    if (!filterOrder.value) filterOrder.value = 'asc'
+    getProducts()
+}
+
 const onFilterShowByChange = (order) => {
     if (!filterOrderCol.value) return
     filterOrder.value = order
@@ -198,12 +203,12 @@ onMounted(() => {
         <!-- # region datalist table -->
         <div class="w-full relative flex gap-4 justify-between">
             <div class="flex gap-4 max-w-[215px]">
-                <KTBButton label="New" icon="pi pi-plus" type="contained" bg-color="bg-green-700"
-                    text-color="text-white" @click="openNew" />
+                <KTBButton label="New" icon="pi pi-plus" type="contained" bg-color="bg-green-700" text-color="text-white"
+                    @click="openNew" />
 
-                <KTBButton class="hidden xl:block" label="Delete" icon="pi pi-trash" type="contained"
-                    bg-color="bg-red-700" text-color="text-white dark:text-white"
-                    :disabled="!selectedProducts || !selectedProducts.length" @click="deleteSelectedProducts" />
+                <KTBButton class="hidden xl:block" label="Delete" icon="pi pi-trash" type="contained" bg-color="bg-red-700"
+                    text-color="text-white dark:text-white" :disabled="!selectedProducts || !selectedProducts.length"
+                    @click="deleteSelectedProducts" />
             </div>
             <div class="flex gap-2 max-w-[260px]">
                 <KTBInputText v-model="filtersSearchBox" class="min-w-36" name="searchBox" placeholder="Search..."
@@ -222,8 +227,8 @@ onMounted(() => {
         <ClientOnly>
             <DataTable ref="dt" class="max-xl:hidden" :value="products" v-model:selection="selectedProducts"
                 resizableColumns columnResizeMode="fit" :sort-field="(filterOrderCol)?.toLowerCase()"
-                :sort-order="sortOrder" showGridlines dataKey="id" :paginator="false" :rows="rowPerPage"
-                :filters="filters" :pt="{ thead: 'bg-green-700 text-white', bodyrow: 'cursor-pointer' }"
+                :sort-order="sortOrder" showGridlines dataKey="id" :paginator="false" :rows="rowPerPage" :filters="filters"
+                :pt="{ thead: 'bg-green-700 text-white', bodyrow: 'cursor-pointer' }"
                 :ptOptions="{ mergeSections: true, mergeProps: true }" @row-click="viewDetail($event.data.id)"
                 @sort="onSort">
                 <template #header>
@@ -251,8 +256,8 @@ onMounted(() => {
                             <img v-if="col.field === 'image'" class="max-w-20 rounded"
                                 :src="`https://primefaces.org/cdn/primevue/images/product/${slotProps.data.image}`" />
                             <div v-else-if="col.field === 'price'">{{ formatCurrency(slotProps.data.price) }}</div>
-                            <Rating v-else-if="col.field === 'rating'" :modelValue="slotProps.data.rating"
-                                :readonly="true" :cancel="false" />
+                            <Rating v-else-if="col.field === 'rating'" :modelValue="slotProps.data.rating" :readonly="true"
+                                :cancel="false" />
                             <Tag v-else-if="col.field === 'status'" :modelValue="slotProps.data.status"
                                 :value="slotProps.data.status" :severity="getStatusLabel(slotProps.data.status)" />
                             <div v-else>{{ slotProps.data[col.field] }}</div>
@@ -274,8 +279,7 @@ onMounted(() => {
         </ClientOnly>
         <!-- # end region datalist table -->
 
-        <KTBDialog v-model="deleteProductDialog" @on-click-no="deleteProductDialog = false"
-            @on-click-yes="deleteProduct">
+        <KTBDialog v-model="deleteProductDialog" @on-click-no="deleteProductDialog = false" @on-click-yes="deleteProduct">
             <div class="confirmation-content">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
                 <span v-if="product">Are you sure you want to delete <b>{{ product.name }}</b>?</span>
@@ -330,8 +334,7 @@ onMounted(() => {
                                 <div class="px-0 py-4 sm:p-4 flex flex-col sm:flex-row items-start gap-4 cursor-pointer"
                                     @click.stop="viewDetail(item.id)"
                                     :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
-                                    <img v-show="isDisplay('image')"
-                                        class="w-60 sm:w-40 shadow-md block mx-auto rounded"
+                                    <img v-show="isDisplay('image')" class="w-60 sm:w-40 shadow-md block mx-auto rounded"
                                         :src="`https://primefaces.org/cdn/primevue/images/product/${item.image}`"
                                         :alt="item.name" />
                                     <div
@@ -354,11 +357,10 @@ onMounted(() => {
                                         <div
                                             class="w-full flex flex-row justify-between items-center sm:flex-col  sm:items-end gap-3 sm:gap-2">
                                             <span v-show="isDisplay('price')" class="text-2xl font-semibold">${{
-        item.price }}</span>
+                                                item.price }}</span>
                                             <div class="min-w-12 w-12">
                                                 <KTBButton class="w-full" icon="pi pi-trash" type="outlined"
-                                                    border-color="border-red-700"
-                                                    text-color="text-red-700 dark:text-white"
+                                                    border-color="border-red-700" text-color="text-red-700 dark:text-white"
                                                     :disabled="item.status === 'OUTOFSTOCK'"
                                                     @click.stop="confirmDeleteProduct(item)" />
                                             </div>
@@ -385,8 +387,7 @@ onMounted(() => {
             </template>
 
             <template #end>
-                <KTBDropdown v-model="rowPerPage" :item-list="ddlRowPerPage"
-                    @update:model-value="onRowPerPageChanged" />
+                <KTBDropdown v-model="rowPerPage" :item-list="ddlRowPerPage" @update:model-value="onRowPerPageChanged" />
             </template>
         </KTBPaginator>
 
@@ -404,15 +405,14 @@ onMounted(() => {
                 <h2 class="text-gray-400">Sorting</h2>
                 <div>
                     <KTBDropdown v-model="filterOrderCol" label="Order column" :item-list="ddlFilter"
-                        placeholder="Please select a filter column" :is-submit="submitted" />
+                        placeholder="Please select a filter column" :is-submit="submitted"
+                        @update:model-value="onChangeFilterOrderCol()" />
 
                     <div class="mt-3 flex gap-1">
-                        <KTBButton label="Ascending" icon="pi pi-sort-amount-up-alt" type="contained"
-                            bg-color="bg-gray-200" text-color="text-gray-700 dark:text-black"
-                            @click="onFilterShowByChange('asc')" />
+                        <KTBButton label="Ascending" icon="pi pi-sort-amount-up-alt" type="contained" bg-color="bg-gray-200"
+                            text-color="text-gray-700 dark:text-black" @click="onFilterShowByChange('asc')" />
                         <KTBButton label="Descending" icon="pi pi-sort-amount-down" type="outlined"
-                            border-color="border-gray-700"
-                            text-color="text-gray-700 dark:text-white dark:border-gray-400"
+                            border-color="border-gray-700" text-color="text-gray-700 dark:text-white dark:border-gray-400"
                             @click="onFilterShowByChange('dsc')" />
                     </div>
                 </div>
