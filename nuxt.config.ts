@@ -5,7 +5,6 @@ export default defineNuxtConfig({
     layoutTransition: { name: 'layout', mode: 'out-in' }
   },
   modules: [
-    '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode',
     'nuxt-primevue'
   ],
@@ -23,14 +22,14 @@ export default defineNuxtConfig({
     classSuffix: ''
   },
   css: [
-    'primeicons/primeicons.css', 
+    'primeicons/primeicons.css',
     '~/assets/css/main.css',
   ],
   tailwindcss: {
     config: {
-        content: [
-            "presets/**/*.{js,vue,ts}"
-        ],
+      content: [
+        "presets/**/*.{js,vue,ts}"
+      ],
     }
   },
 })
