@@ -55,7 +55,7 @@ onBeforeMount(() => {
                     ]">
                         <div v-if="!isCollapsed">
                             <div class="flex gap-1.5">
-                                <img class="w-7 h-7 rounded-full" src="https://tailwindcss.com/img/card-top.jpg" />
+                                <img class="w-7 h-7 rounded-full" src="https://primefaces.org/cdn/primevue/images/product/bamboo-watch.jpg" />
                                 <div>Project name</div>
                             </div>
                         </div>
