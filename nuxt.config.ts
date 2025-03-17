@@ -1,36 +1,54 @@
-import path from 'path'
+import PrimeUI from "tailwindcss-primeui";
+import Lara from "@primeuix/themes/lara";
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   app: {
     layoutTransition: { name: 'layout', mode: 'out-in' }
   },
+
   modules: [
-    '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode',
-    'nuxt-primevue'
+    // 'nuxt-primevue',
+    "@nuxtjs/tailwindcss",
+    "@primevue/nuxt-module",
+    '@nuxtjs/color-mode',
   ],
+
   components: {
     global: true,
     dirs: ['~/components', '~/layouts', '~/composables']
   },
+
   primevue: {
     options: {
-      unstyled: true
+      theme: {
+        preset: Lara,
+        options: {
+          darkModeSelector: ".p-dark",
+        },
+      },
+
+      ripple: true,
     },
-    importPT: { from: '~/presets/lara' as string, as: 'lara' }
+    autoImport: true,
   },
+
   colorMode: {
     classSuffix: ''
   },
+
   css: [
-    'primeicons/primeicons.css', 
+    'primeicons/primeicons.css',
     '~/assets/css/main.css',
   ],
+
   tailwindcss: {
     config: {
-        content: [
-            "presets/**/*.{js,vue,ts}"
-        ],
-    }
+      plugins: [PrimeUI],
+      darkMode: ["class", ".p-dark"],
+    },
   },
+
+  compatibilityDate: '2025-03-11',
 })

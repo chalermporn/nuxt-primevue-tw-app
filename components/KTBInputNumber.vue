@@ -31,7 +31,7 @@ const props = defineProps({
         default: false,
     },
     validate: {
-        type: Object,
+        type: Boolean,
         required: false,
         default: false,
     },
@@ -65,7 +65,7 @@ const invalid = computed(() => (props.validate.$invalid && props.isSubmit))
             :pt="{ input: { root: [invalid ? 'border border-red-500' : '', 'bg-white text-dark w-full dark:bg-transparent dark:text-white'] } }"
             :ptOptions="{ mergeSections: true, mergeProps: true }" />
         <small class="p-error text-red-500" v-if="invalid">{{ validate.required.$message
-        }}</small>
+            }}</small>
     </div>
 </template>
 <style scoped></style>

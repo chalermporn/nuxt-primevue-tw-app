@@ -10,25 +10,27 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@egoist/tailwindcss-icons": "^1.7.2",
-    "@iconify-json/mdi": "^1.1.64",
-    "@iconify-json/uil": "^1.1.8",
-    "@nuxtjs/color-mode": "^3.3.2",
-    "@nuxtjs/tailwindcss": "latest",
-    "nuxt": "^3.12.3",
-    "nuxt-primevue": "^3.0.0",
-    "vue": "^3.4.13",
-    "vue-router": "^4.2.5"
+    "@egoist/tailwindcss-icons": "^1.9.0",
+    "@iconify-json/mdi": "^1.2.3",
+    "@iconify-json/uil": "^1.2.3",
+    "@nuxtjs/color-mode": "^3.5.2",
+    "@nuxtjs/tailwindcss": "6.8.0",
+    "@primevue/nuxt-module": "^4.3.1",
+    "nuxt": "^3.16.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
   },
   "dependencies": {
-    "@nuxt/kit": "^3.12.3",
+    "@nuxt/kit": "^3.16.0",
+    "@primeuix/themes": "^1.0.0",
+    "@primevue/core": "^4.3.1",
     "@vuelidate/core": "^2.0.3",
     "@vuelidate/validators": "^2.0.4",
-    "@vueuse/core": "^10.7.2",
+    "@vueuse/core": "^13.0.0",
     "lodash": "^4.17.21",
-    "primeicons": "^6.0.1",
-    "primevue": "^3.53.0",
-    "tailwindcss": "^3.4.1",
-    "unenv": "^1.9.0"
+    "primeicons": "^7.0.0",
+    "primevue": "^4.3.1",
+    "tailwindcss-primeui": "^0.5.1",
+    "unenv": "^1.10.0"
   }
 }

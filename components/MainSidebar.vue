@@ -69,7 +69,7 @@ onBeforeMount(() => {
                             header: ({ props }) => {
                                 return { class: { 'peer': props?.tabindex === 0 } }
                             },
-                            toggleablecontent: ({ props }) => {
+                            contentContainer: ({ props }) => {
                                 return {
                                     ...(isCollapsed ? {
                                         class: [
@@ -82,12 +82,14 @@ onBeforeMount(() => {
                                     } : {})
                                 }
                             },
-                            menucontent: 'border-none',
-                            headercontent: () => {
+                            itemContent: 'border-none',
+                            headerContent: () => {
                                 return { class: ['text-gray-700 rounded-md dark:text-white'] };
                             },
-                            content: ({ context }) => {
-                                return { class: ['p-menuitem-content text-gray-400 rounded-md', { 'text-gray-700 dark:text-white': (context.item.item.url && activeMenu?.findLast(e => e.url === context.item.item.url)) }] }
+                            content: (obj) => {
+                                console.log('obj: ', obj);
+                                return {}
+                                // return { class: ['p-menuitem-content text-gray-400 rounded-md', { 'text-gray-700 dark:text-white': (context.item.item.url && activeMenu?.findLast(e => e.url === context.item.item.url)) }] }
                             },
                         }">
                             <template #item="{ item, root }">
@@ -124,7 +126,8 @@ onBeforeMount(() => {
 
                     <div class="mt-auto">
                         <template v-if="isCollapsed">
-                            <Button class="mx-auto" :icon="colorMode.preference === MODE.DARK ? 'pi pi-moon' : 'pi pi-sun'"
+                            <Button class="mx-auto"
+                                :icon="colorMode.preference === MODE.DARK ? 'pi pi-moon' : 'pi pi-sun'"
                                 :pt="{ root: 'w-10 h-10 rounded-full flex justify-center items-center border border-solid border-gray-700 dark:text-white dark:bg-gray-700' }"
                                 @click="switchMode('')" />
                         </template>

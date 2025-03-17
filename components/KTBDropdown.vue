@@ -36,7 +36,7 @@ const props = defineProps({
         default: false,
     },
     validate: {
-        type: Object,
+        type: Boolean,
         required: false,
         default: false,
     },
@@ -91,7 +91,7 @@ const invalid = computed(() => (props.validate.$invalid && props.isSubmit))
             </template>
         </Dropdown>
         <small class="p-error text-red-500" v-if="invalid">{{ validate.required.$message
-        }}</small>
+            }}</small>
     </div>
 </template>
 <style scoped></style>

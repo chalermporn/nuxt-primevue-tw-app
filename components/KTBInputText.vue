@@ -31,7 +31,7 @@ const props = defineProps({
         default: false,
     },
     validate: {
-        type: Object,
+        type: Boolean,
         required: false,
         default: false,
     }
@@ -48,11 +48,12 @@ const invalid = computed(() => (props.validate.$invalid && props.isSubmit))
 <template>
     <div>
         <label>{{ label }}<span v-show="required" class="ml-1 text-red-500">*</span></label>
-        <InputText class="w-full bg-white dark:bg-transparent" :value="modelValue" :name="name" :placeholder="placeholder"
-            @input="(e) => (emit('update:modelValue', e.target.value))"
-            :pt="{ root: invalid ? 'border border-red-500' : '' }" :ptOptions="{ mergeSections: true, mergeProps: true }" />
+        <InputText class="w-full bg-white dark:bg-transparent" :value="modelValue" :name="name"
+            :placeholder="placeholder" @input="(e) => (emit('update:modelValue', e.target.value))"
+            :pt="{ root: invalid ? 'border border-red-500' : '' }"
+            :ptOptions="{ mergeSections: true, mergeProps: true }" />
         <small class="p-error text-red-500" v-if="invalid">{{ validate.required.$message
-        }}</small>
+            }}</small>
     </div>
 </template>
 <style scoped></style>
